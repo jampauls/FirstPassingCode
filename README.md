@@ -9,7 +9,7 @@ The code computes the probability that a disturbance-energy threshold has been c
 The propagated disturbance is represented in a common set of inlet stochastic coordinates:
 
 $$
-q(x)=B(x)w,\qquad w\sim\mathcal N(0,I_r).
+q(x)=B(x)w, \quad w \sim N(0, I_r).
 $$
 
 The default implementation uses **real Gaussian coefficients**, even though the Fourier-transformed OWNS states and propagated basis vectors can be complex.
@@ -17,13 +17,13 @@ The default implementation uses **real Gaussian coefficients**, even though the 
 For an energy weight matrix $H(x)$,
 
 $$
-e(x)=q(x)^*H(x)q(x)=w^\mathsf{T}A(x)w,
+e(x)=q(x)^*H(x)q(x)=w^T A(x)w,
 $$
 
 where
 
 $$
-A(x)=\operatorname{Re}\!\left[B(x)^*H(x)B(x)\right].
+A(x)=\mathrm{Re}[B(x)^*H(x)B(x)].
 $$
 
 Given a positive transition threshold $e_{\mathrm{thres}}(x)$, define
@@ -35,25 +35,25 @@ $$
 The first-transition location is
 
 $$
-X_{\mathrm{tr}}=\inf\left\{x:w^\mathsf{T}G(x)w\ge 1\right\}.
+X_{\mathrm{tr}}=\inf\{x: w^T G(x) w \ge 1\}.
 $$
 
 Using the decomposition
 
 $$
-w=Ru,\qquad R^2\sim\chi_r^2,\qquad u\sim\operatorname{Unif}(\mathbb S^{r-1}),
+w=Ru, \quad R^2 \sim \chi_r^2, \quad u \sim \mathrm{Unif}(S^{r-1}),
 $$
 
 define the directional running maximum
 
 $$
-m_u(x)=\max_{\xi\le x} u^\mathsf{T}G(\xi)u.
+m_u(x)=\max_{\xi \le x} u^T G(\xi)u.
 $$
 
 The first-transition cumulative distribution function is then
 
 $$
-F_{X_{\mathrm{tr}}}(x)=\mathbb E_u\!\left[\overline F_{\chi_r^2}\!\left(\frac{1}{m_u(x)}\right)\right].
+F_{X_{\mathrm{tr}}}(x)=E_u\left[\bar F_{\chi_r^2}\left(\frac{1}{m_u(x)}\right)\right].
 $$
 
 The running maximum provides streamwise memory: once a realization crosses the threshold, it remains classified as transitioned downstream.
@@ -1405,17 +1405,7 @@ results.reductionInfo
 Large OWNS MAT-files should not be committed to Git. Store them externally and configure their paths at runtime.
 
 Likewise, generated result files, figures, and temporary MATLAB files should generally be excluded unless intentionally added as small regression references.
-
-## License
-
-No license has yet been selected. Before publishing the repository, add a license file appropriate for the intended use and distribution policy.
-
-## Citation
-
-A formal citation has not yet been assigned. If this repository supports a publication or dissertation, add the corresponding citation and DOI here.
 ```
-
-I also recommend creating a `.gitignore` in the project root:
 
 ```gitignore
 # MATLAB temporary and autosave files
