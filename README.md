@@ -1,6 +1,6 @@
-﻿# OWNS First-Transition Probability
+# OWNS First-Transition Probability
 
-MATLAB implementation of a memory-aware first-transition method for Gaussian disturbances propagated by the One-Way Navierâ€“Stokes (OWNS) equations.
+MATLAB implementation of a memory-aware first-transition method for Gaussian disturbances propagated by the One-Way Navier–Stokes (OWNS) equations.
 
 The code computes the probability that a disturbance-energy threshold has been crossed at or before each streamwise station. Unlike a local energy-exceedance probability, the first-transition probability retains the upstream history of each stochastic realization.
 
@@ -71,7 +71,7 @@ The code currently supports:
 - grid-based and cubic-Hermite streamwise maximum detection;
 - deterministic circular quadrature for two stochastic dimensions;
 - random angular integration;
-- scrambled Sobolâ€™ randomized quasi-Monte Carlo;
+- scrambled Sobol’ randomized quasi-Monte Carlo;
 - replicate-based RQMC standard-error estimates;
 - transition-oriented stochastic dimension reduction;
 - integrated, eigenspace-union, hybrid, and greedy bases;
@@ -94,7 +94,7 @@ The target version is:
 
 - MATLAB R2020b
 
-The following toolbox is required for scrambled Sobolâ€™ RQMC:
+The following toolbox is required for scrambled Sobol’ RQMC:
 
 - Statistics and Machine Learning Toolbox
 
@@ -105,7 +105,7 @@ sobolset
 scramble
 ```
 
-Most chi-square and gamma probabilities are evaluated through MATLABâ€™s built-in `gammainc`, avoiding a dependency on `chi2cdf`.
+Most chi-square and gamma probabilities are evaluated through MATLAB’s built-in `gammainc`, avoiding a dependency on `chi2cdf`.
 
 A graphical MATLAB session is required only when using:
 
@@ -123,110 +123,110 @@ cfg.dataSource = 'ownsMatFile';
 
 ```text
 project_root/
-â”œâ”€â”€ README.md
-â”œâ”€â”€ run_first_transition.m
-â”‚
-â”œâ”€â”€ src/
-â”‚   â”œâ”€â”€ angular/
-â”‚   â”‚   â”œâ”€â”€ computeProperComplexRQMCCDF.m
-â”‚   â”‚   â”œâ”€â”€ computeRQMCCDF.m
-â”‚   â”‚   â”œâ”€â”€ computeRQMCCDFConverged.m
-â”‚   â”‚   â”œâ”€â”€ evaluateAngularReplicate.m
-â”‚   â”‚   â”œâ”€â”€ generateAngularRule.m
-â”‚   â”‚   â”œâ”€â”€ generateProperComplexAngularRule.m
-â”‚   â”‚   â”œâ”€â”€ generateScrambledSobolNormals.m
-â”‚   â”‚   â”œâ”€â”€ nestedNormalsToDirections.m
-â”‚   â”‚   â””â”€â”€ validateAngularRule.m
-â”‚   â”‚
-â”‚   â”œâ”€â”€ data/
-â”‚   â”‚   â”œâ”€â”€ convertFactorOrientation.m
-â”‚   â”‚   â”œâ”€â”€ extractOWNSCoordinate.m
-â”‚   â”‚   â”œâ”€â”€ inspectOWNSData.m
-â”‚   â”‚   â”œâ”€â”€ loadOWNSProblem.m
-â”‚   â”‚   â”œâ”€â”€ loadProblemData.m
-â”‚   â”‚   â”œâ”€â”€ makeSyntheticProblem.m
-â”‚   â”‚   â”œâ”€â”€ runOWNSWorkflow.m
-â”‚   â”‚   â”œâ”€â”€ selectOWNSDataFile.m
-â”‚   â”‚   â””â”€â”€ validateProblemData.m
-â”‚   â”‚
-â”‚   â”œâ”€â”€ diagnostics/
-â”‚   â”‚   â””â”€â”€ computeDirectionalDiagnostics.m
-â”‚   â”‚
-â”‚   â”œâ”€â”€ matrices/
-â”‚   â”‚   â”œâ”€â”€ buildAFromOWNS.m
-â”‚   â”‚   â”œâ”€â”€ buildGFamily.m
-â”‚   â”‚   â”œâ”€â”€ buildGFromAFamily.m
-â”‚   â”‚   â”œâ”€â”€ buildGprimeFamily.m
-â”‚   â”‚   â”œâ”€â”€ validateGFamily.m
-â”‚   â”‚   â””â”€â”€ validateGprimeFamily.m
-â”‚   â”‚
-â”‚   â”œâ”€â”€ maxima/
-â”‚   â”‚   â”œâ”€â”€ computeRunningMaxAdaptive.m
-â”‚   â”‚   â”œâ”€â”€ computeRunningMaxGrid.m
-â”‚   â”‚   â”œâ”€â”€ computeRunningMaxHermite.m
-â”‚   â”‚   â”œâ”€â”€ cubicHermiteIntervalMaximum.m
-â”‚   â”‚   â””â”€â”€ validateRunningMax.m
-â”‚   â”‚
-â”‚   â”œâ”€â”€ plotting/
-â”‚   â”‚   â””â”€â”€ plotTransitionResults.m
-â”‚   â”‚
-â”‚   â”œâ”€â”€ probability/
-â”‚   â”‚   â”œâ”€â”€ buildRQMCEnergyEnvelope.m
-â”‚   â”‚   â”œâ”€â”€ buildThresholdSweepValues.m
-â”‚   â”‚   â”œâ”€â”€ buildTransitionThreshold.m
-â”‚   â”‚   â”œâ”€â”€ computeLocalExceedance.m
-â”‚   â”‚   â”œâ”€â”€ computeLocalExceedanceCF.m
-â”‚   â”‚   â”œâ”€â”€ computeLocalExceedanceFromGains.m
-â”‚   â”‚   â”œâ”€â”€ computeProperComplexLocalExceedanceFromGains.m
-â”‚   â”‚   â”œâ”€â”€ computeProperComplexTrajectoryMonteCarlo.m
-â”‚   â”‚   â”œâ”€â”€ computeProperComplexTransitionCDF.m
-â”‚   â”‚   â”œâ”€â”€ computeTrajectoryMonteCarlo.m
-â”‚   â”‚   â”œâ”€â”€ computeTransitionCDF.m
-â”‚   â”‚   â”œâ”€â”€ computeTransitionQuantiles.m
-â”‚   â”‚   â”œâ”€â”€ evaluateEnergyEnvelope.m
-â”‚   â”‚   â”œâ”€â”€ evaluateThresholdAmplitudeFamily.m
-â”‚   â”‚   â”œâ”€â”€ generalizedQuadraticFormTail.m
-â”‚   â”‚   â”œâ”€â”€ solveQuadraticFormThreshold.m
-â”‚   â”‚   â”œâ”€â”€ solveThresholdForTargetProbability.m
-â”‚   â”‚   â””â”€â”€ validateProbabilityCurves.m
-â”‚   â”‚
-â”‚   â””â”€â”€ reduction/
-â”‚       â”œâ”€â”€ applyComplexReductionToMatrixFamily.m
-â”‚       â”œâ”€â”€ applyReductionToFactors.m
-â”‚       â”œâ”€â”€ applyReductionToMatrixFamily.m
-â”‚       â”œâ”€â”€ buildComplexIntegratedBasis.m
-â”‚       â”œâ”€â”€ buildEigenspaceSnapshotBasis.m
-â”‚       â”œâ”€â”€ buildIntegratedTransitionMatrix.m
-â”‚       â”œâ”€â”€ buildTransitionBasis.m
-â”‚       â”œâ”€â”€ computeCoupledComplexRankStudy.m
-â”‚       â”œâ”€â”€ computeCoupledRankStudy.m
-â”‚       â”œâ”€â”€ computeReductionDiagnostics.m
-â”‚       â”œâ”€â”€ computeTrapezoidalWeights.m
-â”‚       â”œâ”€â”€ enrichTransitionBasisGreedy.m
-â”‚       â”œâ”€â”€ selectRankFromCoupledStudy.m
-â”‚       â”œâ”€â”€ selectTransitionStations.m
-â”‚       â”œâ”€â”€ validateComplexReductionBasis.m
-â”‚       â””â”€â”€ validateReductionBasis.m
-â”‚
-â”œâ”€â”€ examples/
-â”‚   â””â”€â”€ plotSyntheticProblem.m
-â”‚
-â”œâ”€â”€ tests/
-â”‚   â”œâ”€â”€ runHermiteMaximumTests.m
-â”‚   â”œâ”€â”€ runOWNSCoupledReductionStudy.m
-â”‚   â”œâ”€â”€ runOWNSGaussianConventionStudy.m
-â”‚   â”œâ”€â”€ runOWNSLocalProbabilityCheck.m
-â”‚   â”œâ”€â”€ runOWNSProperComplexRankStudy.m
-â”‚   â”œâ”€â”€ runOWNSReductionStudy.m
-â”‚   â”œâ”€â”€ runOWNSSmokeTest.m
-â”‚   â”œâ”€â”€ runOWNSThresholdStudy.m
-â”‚   â”œâ”€â”€ runProperComplexRegressionTests.m
-â”‚   â”œâ”€â”€ runQuadraticFormTailTests.m
-â”‚   â”œâ”€â”€ runRQMCTests.m
-â”‚   â””â”€â”€ runSyntheticRegressionTests.m
-â”‚
-â””â”€â”€ data/
-    â””â”€â”€ .gitkeep
+├── README.md
+├── run_first_transition.m
+│
+├── src/
+│   ├── angular/
+│   │   ├── computeProperComplexRQMCCDF.m
+│   │   ├── computeRQMCCDF.m
+│   │   ├── computeRQMCCDFConverged.m
+│   │   ├── evaluateAngularReplicate.m
+│   │   ├── generateAngularRule.m
+│   │   ├── generateProperComplexAngularRule.m
+│   │   ├── generateScrambledSobolNormals.m
+│   │   ├── nestedNormalsToDirections.m
+│   │   └── validateAngularRule.m
+│   │
+│   ├── data/
+│   │   ├── convertFactorOrientation.m
+│   │   ├── extractOWNSCoordinate.m
+│   │   ├── inspectOWNSData.m
+│   │   ├── loadOWNSProblem.m
+│   │   ├── loadProblemData.m
+│   │   ├── makeSyntheticProblem.m
+│   │   ├── runOWNSWorkflow.m
+│   │   ├── selectOWNSDataFile.m
+│   │   └── validateProblemData.m
+│   │
+│   ├── diagnostics/
+│   │   └── computeDirectionalDiagnostics.m
+│   │
+│   ├── matrices/
+│   │   ├── buildAFromOWNS.m
+│   │   ├── buildGFamily.m
+│   │   ├── buildGFromAFamily.m
+│   │   ├── buildGprimeFamily.m
+│   │   ├── validateGFamily.m
+│   │   └── validateGprimeFamily.m
+│   │
+│   ├── maxima/
+│   │   ├── computeRunningMaxAdaptive.m
+│   │   ├── computeRunningMaxGrid.m
+│   │   ├── computeRunningMaxHermite.m
+│   │   ├── cubicHermiteIntervalMaximum.m
+│   │   └── validateRunningMax.m
+│   │
+│   ├── plotting/
+│   │   └── plotTransitionResults.m
+│   │
+│   ├── probability/
+│   │   ├── buildRQMCEnergyEnvelope.m
+│   │   ├── buildThresholdSweepValues.m
+│   │   ├── buildTransitionThreshold.m
+│   │   ├── computeLocalExceedance.m
+│   │   ├── computeLocalExceedanceCF.m
+│   │   ├── computeLocalExceedanceFromGains.m
+│   │   ├── computeProperComplexLocalExceedanceFromGains.m
+│   │   ├── computeProperComplexTrajectoryMonteCarlo.m
+│   │   ├── computeProperComplexTransitionCDF.m
+│   │   ├── computeTrajectoryMonteCarlo.m
+│   │   ├── computeTransitionCDF.m
+│   │   ├── computeTransitionQuantiles.m
+│   │   ├── evaluateEnergyEnvelope.m
+│   │   ├── evaluateThresholdAmplitudeFamily.m
+│   │   ├── generalizedQuadraticFormTail.m
+│   │   ├── solveQuadraticFormThreshold.m
+│   │   ├── solveThresholdForTargetProbability.m
+│   │   └── validateProbabilityCurves.m
+│   │
+│   └── reduction/
+│       ├── applyComplexReductionToMatrixFamily.m
+│       ├── applyReductionToFactors.m
+│       ├── applyReductionToMatrixFamily.m
+│       ├── buildComplexIntegratedBasis.m
+│       ├── buildEigenspaceSnapshotBasis.m
+│       ├── buildIntegratedTransitionMatrix.m
+│       ├── buildTransitionBasis.m
+│       ├── computeCoupledComplexRankStudy.m
+│       ├── computeCoupledRankStudy.m
+│       ├── computeReductionDiagnostics.m
+│       ├── computeTrapezoidalWeights.m
+│       ├── enrichTransitionBasisGreedy.m
+│       ├── selectRankFromCoupledStudy.m
+│       ├── selectTransitionStations.m
+│       ├── validateComplexReductionBasis.m
+│       └── validateReductionBasis.m
+│
+├── examples/
+│   └── plotSyntheticProblem.m
+│
+├── tests/
+│   ├── runHermiteMaximumTests.m
+│   ├── runOWNSCoupledReductionStudy.m
+│   ├── runOWNSGaussianConventionStudy.m
+│   ├── runOWNSLocalProbabilityCheck.m
+│   ├── runOWNSProperComplexRankStudy.m
+│   ├── runOWNSReductionStudy.m
+│   ├── runOWNSSmokeTest.m
+│   ├── runOWNSThresholdStudy.m
+│   ├── runProperComplexRegressionTests.m
+│   ├── runQuadraticFormTailTests.m
+│   ├── runRQMCTests.m
+│   └── runSyntheticRegressionTests.m
+│
+└── data/
+    └── .gitkeep
 ```
 
 Some files shown above may remain stubs until their corresponding capability is completed. In particular, the adaptive maximum finder and direct OWNS marching interface are not part of the current production path.
@@ -441,8 +441,8 @@ This uses:
 $$
 e_{\mathrm{thres}}
 =
-\max_x \\mathbb{E}[e(x)].
-;
+\max_x \mathbb{E}[e(x)].
+$$
 
 This is intended only for numerical development.
 
@@ -545,7 +545,7 @@ cfg.angular.method = 'circle';
 cfg.angular.numDirections = 4096;
 ```
 
-### Scrambled SobolÃ¢â‚¬â„¢ RQMC
+### Scrambled Sobol’ RQMC
 
 For moderate or high stochastic dimension:
 
@@ -565,8 +565,8 @@ RQMC replicates are evaluated using common local and first-transition directiona
 $$
 p_{\mathrm{local}}(x)
 \leq
-F_{X_{\mathrm{tr}}}(x)
-;
+F_{X_{\mathrm{tr}}}(x).
+$$
 
 replicate by replicate.
 
@@ -588,7 +588,7 @@ $$
 K
 =
 \int G(x)\,dx.
-;
+$$
 
 Its leading eigenvectors define the reduced stochastic basis.
 
@@ -703,7 +703,7 @@ runRQMCTests
 
 Verifies:
 
-- scrambled Sobolâ€™ convergence;
+- scrambled Sobol’ convergence;
 - deterministic reproducibility under fixed seeds;
 - agreement with a deterministic circular reference;
 - replicate uncertainty.
@@ -789,13 +789,13 @@ F(xmax) = 0.3461875
 Using the real-coefficient model and the provisional automatic threshold, the full-rank transition probability was approximately:
 
 ```text
-F(xmax) Ã¢â€°Ë† 0.447
+F(xmax) ≈ 0.447
 ```
 
 Using proper-complex coefficients produced a larger probability of approximately:
 
 ```text
-F(xmax) Ã¢â€°Ë† 0.483
+F(xmax) ≈ 0.483
 ```
 
 These values are for numerical development only because the physical transition threshold has not yet been calibrated.
@@ -871,7 +871,7 @@ No license has yet been selected. Before publishing the repository, add a licens
 
 A formal citation has not yet been assigned. If this repository supports a publication or dissertation, add the corresponding citation and DOI here.
 
-## Suggested .gitignore
+## .gitignore
 
 ```gitignore
 # MATLAB temporary and autosave files
@@ -915,506 +915,15 @@ Thumbs.db
 slurm-*.out
 *.o
 *.e
+
+# Exclude image files in the figures directory even if tracked elsewhere
+figures/**/*.png
+figures/**/*.jpg
+figures/**/*.jpeg
+figures/**/*.gif
+figures/**/*.webp
+figures/**/*.svg
+figures/**/*.bmp
+figures/**/*.tif
+figures/**/*.tiff
 ```
-
-If you intend to commit small MAT-files for regression tests, replace the broad `*.mat` rule with:
-
-```gitignore
-data/*.mat
-results/*.mat
-output/*.mat
-
-!tests/reference_data/*.mat
-```
-
-For curved geometries, wall arc length is computed from the physical `x`, `y`, and optionally `z` coordinates.
-
-## Transition threshold
-
-A validated physical threshold is not yet available. The code supports provisional data-derived thresholds and user-specified values.
-
-### Automatic development threshold
-
-```matlab
-cfg.threshold.method = 'auto';
-cfg.threshold.autoMaxMeanFactor = 1;
-```
-
-This uses:
-
-$$
-e_{\mathrm{thres}}
-=
-\max_x \\mathbb{E}[e(x)].
-;
-
-This is intended only for numerical development.
-
-### Specified constant threshold
-
-```matlab
-cfg.threshold.method = 'specifiedScalar';
-cfg.threshold.value = 2.5e-4;
-```
-
-### Specified streamwise threshold
-
-```matlab
-cfg.threshold.method = 'specifiedVector';
-cfg.threshold.vector = thresholdVector;
-```
-
-### Inlet exceedance quantile
-
-```matlab
-cfg.threshold.method = 'initialQuantileCF';
-cfg.threshold.exceedanceProbability = 1e-3;
-```
-
-This uses deterministic characteristic-function inversion of the inlet quadratic-form distribution.
-
-Any automatically generated threshold should be treated as provisional until calibrated or justified using DNS or another physical transition criterion.
-
-## Stochastic coefficient convention
-
-### Default: real Gaussian coefficients
-
-The primary model is:
-
-```matlab
-w = randn(r, 1);
-qRealization = B * w;
-physicalField = real(qRealization);
-```
-
-Use:
-
-```matlab
-cfg.gaussianConvention = 'real';
-```
-
-The radial law is: $R^2 \sim \chi_r^2$.
-
-### Sensitivity model: proper-complex coefficients
-
-The optional sensitivity model is:
-
-```matlab
-z = (randn(r,1) + 1i*randn(r,1)) / sqrt(2);
-qRealization = B * z;
-```
-
-Use the proper-complex probability functions and complex-specific reduction basis.
-
-The radial law is: $R^2 \sim \Gamma(r,1)$.
-
-The proper-complex model represents additional independent random phase variation in each latent coefficient. It is not currently the primary physical model.
-
-## Streamwise maximum detection
-
-### Stored-grid maximum
-
-```matlab
-cfg.maxDetection.method = 'grid';
-```
-
-This checks only stored streamwise stations and generally provides a lower approximation to continuous first-transition probability.
-
-### Cubic-Hermite maximum
-
-```matlab
-cfg.maxDetection.method = 'hermite';
-```
-
-This uses endpoint values and derivatives of each directional gain to locate interior maxima between stations.
-
-For precomputed OWNS data, derivatives are currently estimated with a nonuniform three-point polynomial stencil.
-
-### Adaptive method
-
-```matlab
-cfg.maxDetection.method = 'adaptive';
-```
-
-This branch is reserved for future work and is not currently part of the verified production workflow.
-
-## Angular integration
-
-### Two-dimensional deterministic rule
-
-For \(r=2\):
-
-```matlab
-cfg.angular.method = 'circle';
-cfg.angular.numDirections = 4096;
-```
-
-### Scrambled SobolÃ¢â‚¬â„¢ RQMC
-
-For moderate or high stochastic dimension:
-
-```matlab
-cfg.angular.method = 'rqmc';
-cfg.angular.numDirections = 4096;
-cfg.angular.numReplicates = 8;
-cfg.angular.randomSeed = 1;
-cfg.angular.sobolSkip = 1024;
-cfg.angular.sobolLeap = 0;
-cfg.angular.scramble = true;
-cfg.angular.probabilityClip = 1e-12;
-```
-
-RQMC replicates are evaluated using common local and first-transition directional samples, preserving:
-
-$$
-p_{\mathrm{local}}(x)
-\leq
-F_{X_{\mathrm{tr}}}(x)
-;
-
-replicate by replicate.
-
-## Transition-oriented dimension reduction
-
-The full OWNS stochastic rank is currently \(r=141\). A fixed reduced basis is used over the complete streamwise domain.
-
-### Integrated basis
-
-```matlab
-cfg.reduction.method = 'integrated';
-cfg.reduction.targetRank = 30;
-cfg.reduction.integrationWeight = 'uniform';
-```
-
-The integrated matrix is:
-
-$$
-K
-=
-\int G(x)\,dx.
-;
-
-Its leading eigenvectors define the reduced stochastic basis.
-
-### Other available basis methods
-
-```text
-eigUnion
-hybrid
-greedy
-givenBasis
-none
-```
-
-For the current real-coefficient OWNS dataset, a coupled RQMC rank study indicated that rank 30 satisfies an approximate absolute complete-CDF tolerance of \(5\times10^{-3}\) under the provisional threshold.
-
-Rank adequacy should be checked again if:
-
-- the dataset changes materially;
-- the threshold becomes streamwise varying;
-- the energy norm changes;
-- or the Gaussian coefficient convention changes.
-
-## Local energy probabilities
-
-Two local probability methods are available.
-
-### Same-angular-rule estimate
-
-This uses the same RQMC directions as the first-transition calculation:
-
-```matlab
-cfg.localProbability.method = 'sameAngular';
-```
-
-### Independent characteristic-function inversion
-
-```matlab
-cfg.localProbability.method = 'characteristicFunction';
-```
-
-or:
-
-```matlab
-cfg.localProbability.method = 'both';
-```
-
-The deterministic method evaluates the local generalized quadratic-form tail using characteristic-function inversion and is independent of angular RQMC.
-
-## Threshold and amplitude studies
-
-For a constant threshold and inlet amplitude multiplier $\epsilon$,
-
-$$
-F_{X_{\mathrm{tr}}}(x)=E_u\left[\bar F_{\chi_r^2}\left(\frac{e_{\mathrm{thres}}}{\epsilon^2 M_u(x)}\right)\right].
-$$
-
-A reusable unnormalized energy envelope permits many thresholds and amplitudes to be evaluated without repeating the directional maximum calculation.
-
-Enable the main-script sweep with:
-
-```matlab
-cfg.thresholdSweep.enable = true;
-```
-
-Representative options are:
-
-```matlab
-cfg.thresholdSweep.factors = logspace(-0.5, 0.5, 9);
-cfg.thresholdSweep.amplitudes = [0.5, 0.75, 1.0, 1.25, 1.5];
-cfg.thresholdSweep.referenceMethod = 'maximumMeanEnergy';
-```
-
-A target terminal probability can also be used to solve for a constant threshold.
-
-## Tests
-
-Run the following tests from the MATLAB command window.
-
-### Synthetic regression
-
-```matlab
-runSyntheticRegressionTests
-```
-
-Verifies:
-
-- construction of the synthetic \(G(x)\);
-- angular convergence;
-- trajectory Monte Carlo agreement;
-- local-versus-first-transition consistency;
-- probability conservation.
-
-### Hermite maximum detection
-
-```matlab
-runHermiteMaximumTests
-```
-
-Verifies:
-
-- exact reproduction of cubic maxima;
-- exact synthetic derivatives;
-- Hermite versus stored-grid maxima;
-- agreement with a dense streamwise reference;
-- finite-difference derivative fallback.
-
-### RQMC integration
-
-```matlab
-runRQMCTests
-```
-
-Verifies:
-
-- scrambled SobolÃ¢â‚¬â„¢ convergence;
-- deterministic reproducibility under fixed seeds;
-- agreement with a deterministic circular reference;
-- replicate uncertainty.
-
-### OWNS smoke test
-
-```matlab
-runOWNSSmokeTest
-```
-
-Verifies the complete OWNS loading, energy compression, threshold, Hermite, and RQMC path.
-
-### Real-model rank convergence
-
-```matlab
-runOWNSCoupledReductionStudy
-```
-
-Uses common RQMC coordinates across nested ranks to estimate paired reduction error.
-
-### Proper-complex verification
-
-```matlab
-runProperComplexRegressionTests
-```
-
-Verifies:
-
-- analytical scalar proper-complex probabilities;
-- proper-complex energy moments;
-- direct trajectory Monte Carlo agreement.
-
-### Proper-complex rank convergence
-
-```matlab
-runOWNSProperComplexRankStudy
-```
-
-Checks complex-specific transition-oriented bases and full-rank convergence.
-
-### Generalized quadratic-form tails
-
-```matlab
-runQuadraticFormTailTests
-```
-
-Verifies deterministic local tail probabilities and threshold inversion.
-
-### OWNS local probability comparison
-
-```matlab
-runOWNSLocalProbabilityCheck
-```
-
-Compares angular RQMC local probabilities against independent characteristic-function inversion.
-
-### Threshold sensitivity
-
-```matlab
-runOWNSThresholdStudy
-```
-
-Evaluates constant-threshold and inlet-amplitude sensitivity using a reusable energy envelope.
-
-## Representative verified results
-
-### Synthetic two-dimensional test
-
-Endpoint-only circular result:
-
-```text
-F(xmax) = 0.3461435512
-```
-
-Hermite-corrected result:
-
-```text
-F(xmax) = 0.3461875
-```
-
-### Current OWNS dataset with provisional threshold
-
-Using the real-coefficient model and the provisional automatic threshold, the full-rank transition probability was approximately:
-
-```text
-F(xmax) Ã¢â€°Ë† 0.447
-```
-
-Using proper-complex coefficients produced a larger probability of approximately:
-
-```text
-F(xmax) Ã¢â€°Ë† 0.483
-```
-
-These values are for numerical development only because the physical transition threshold has not yet been calibrated.
-
-## Current limitations
-
-The following capabilities are not currently part of the verified production path:
-
-- direct execution of the OWNS spatial march;
-- nonzero distributed forcing;
-- adaptive insertion of new physical OWNS stations;
-- nonlinear disturbance propagation;
-- DNS threshold calibration;
-- broadband joint reconstruction across multiple \((\omega,\beta)\) pairs;
-- directory-wide processing of all spectral pairs;
-- physical-field plotting and reconstruction inside this repository;
-- automatic parallel RQMC execution.
-
-OWNS runs and physical disturbance visualization are expected to remain external to this codebase.
-
-## Planned future work
-
-Current priorities are:
-
-1. finish verification of deterministic generalized quadratic-form tails;
-2. add configurable higher-order derivative stencils for \(G'(x)\);
-3. automate RQMC convergence for production calculations;
-4. add optional parallel execution over RQMC replicates;
-5. implement survivor-conditioned stochastic covariance;
-6. implement transition-conditioned directional diagnostics;
-7. design directory-wide processing of all \((\omega,\beta)\) pairs;
-8. design joint reconstruction over the full spectral space.
-
-The broadband reconstruction requires a deliberate modeling decision about spectral correlations, phase conventions, and whether transition is defined from summed energy or another joint spectral statistic.
-
-## Reproducibility
-
-For reproducible calculations, preserve:
-
-- the complete configuration structure;
-- selected OWNS file path;
-- temporal frequency and spanwise wavenumber;
-- stochastic rank and basis;
-- threshold definition;
-- maximum-detection method;
-- RQMC point count;
-- RQMC replicate count;
-- all random seeds;
-- MATLAB version;
-- numerical tolerances.
-
-The main result structure should include, at minimum:
-
-```matlab
-results.cfg
-results.meta
-results.prob
-results.post
-results.reductionInfo
-```
-
-## Data and repository policy
-
-Large OWNS MAT-files should not be committed to Git. Store them externally and configure their paths at runtime.
-
-Likewise, generated result files, figures, and temporary MATLAB files should generally be excluded unless intentionally added as small regression references.
-```
-
-```gitignore
-# MATLAB temporary and autosave files
-*.asv
-*.m~
-*.autosave
-
-# MATLAB generated files
-*.mex*
-*.mlappinstall
-*.mltbx
-
-# Large data and result files
-*.mat
-*.h5
-*.hdf5
-
-# Generated output directories
-results/
-figures/
-output/
-tmp/
-temp/
-
-# Keep empty project data directory
-!data/.gitkeep
-
-# Profiling and coverage output
-profile_results/
-coverage/
-
-# Operating-system files
-.DS_Store
-Thumbs.db
-
-# Editor and IDE settings
-.vscode/
-.idea/
-
-# Slurm or cluster output
-slurm-*.out
-*.o
-*.e
-```
-
-
-
-
-
-
-
