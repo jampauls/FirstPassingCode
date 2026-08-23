@@ -1,6 +1,6 @@
-# OWNS First-Transition Probability
+﻿# OWNS First-Transition Probability
 
-MATLAB implementation of a memory-aware first-transition method for Gaussian disturbances propagated by the One-Way Navier–Stokes (OWNS) equations.
+MATLAB implementation of a memory-aware first-transition method for Gaussian disturbances propagated by the One-Way Navierâ€“Stokes (OWNS) equations.
 
 The code computes the probability that a disturbance-energy threshold has been crossed at or before each streamwise station. Unlike a local energy-exceedance probability, the first-transition probability retains the upstream history of each stochastic realization.
 
@@ -71,7 +71,7 @@ The code currently supports:
 - grid-based and cubic-Hermite streamwise maximum detection;
 - deterministic circular quadrature for two stochastic dimensions;
 - random angular integration;
-- scrambled Sobol’ randomized quasi-Monte Carlo;
+- scrambled Sobolâ€™ randomized quasi-Monte Carlo;
 - replicate-based RQMC standard-error estimates;
 - transition-oriented stochastic dimension reduction;
 - integrated, eigenspace-union, hybrid, and greedy bases;
@@ -94,7 +94,7 @@ The target version is:
 
 - MATLAB R2020b
 
-The following toolbox is required for scrambled Sobol’ RQMC:
+The following toolbox is required for scrambled Sobolâ€™ RQMC:
 
 - Statistics and Machine Learning Toolbox
 
@@ -105,7 +105,7 @@ sobolset
 scramble
 ```
 
-Most chi-square and gamma probabilities are evaluated through MATLAB’s built-in `gammainc`, avoiding a dependency on `chi2cdf`.
+Most chi-square and gamma probabilities are evaluated through MATLABâ€™s built-in `gammainc`, avoiding a dependency on `chi2cdf`.
 
 A graphical MATLAB session is required only when using:
 
@@ -123,110 +123,110 @@ cfg.dataSource = 'ownsMatFile';
 
 ```text
 project_root/
-├── README.md
-├── run_first_transition.m
-│
-├── src/
-│   ├── angular/
-│   │   ├── computeProperComplexRQMCCDF.m
-│   │   ├── computeRQMCCDF.m
-│   │   ├── computeRQMCCDFConverged.m
-│   │   ├── evaluateAngularReplicate.m
-│   │   ├── generateAngularRule.m
-│   │   ├── generateProperComplexAngularRule.m
-│   │   ├── generateScrambledSobolNormals.m
-│   │   ├── nestedNormalsToDirections.m
-│   │   └── validateAngularRule.m
-│   │
-│   ├── data/
-│   │   ├── convertFactorOrientation.m
-│   │   ├── extractOWNSCoordinate.m
-│   │   ├── inspectOWNSData.m
-│   │   ├── loadOWNSProblem.m
-│   │   ├── loadProblemData.m
-│   │   ├── makeSyntheticProblem.m
-│   │   ├── runOWNSWorkflow.m
-│   │   ├── selectOWNSDataFile.m
-│   │   └── validateProblemData.m
-│   │
-│   ├── diagnostics/
-│   │   └── computeDirectionalDiagnostics.m
-│   │
-│   ├── matrices/
-│   │   ├── buildAFromOWNS.m
-│   │   ├── buildGFamily.m
-│   │   ├── buildGFromAFamily.m
-│   │   ├── buildGprimeFamily.m
-│   │   ├── validateGFamily.m
-│   │   └── validateGprimeFamily.m
-│   │
-│   ├── maxima/
-│   │   ├── computeRunningMaxAdaptive.m
-│   │   ├── computeRunningMaxGrid.m
-│   │   ├── computeRunningMaxHermite.m
-│   │   ├── cubicHermiteIntervalMaximum.m
-│   │   └── validateRunningMax.m
-│   │
-│   ├── plotting/
-│   │   └── plotTransitionResults.m
-│   │
-│   ├── probability/
-│   │   ├── buildRQMCEnergyEnvelope.m
-│   │   ├── buildThresholdSweepValues.m
-│   │   ├── buildTransitionThreshold.m
-│   │   ├── computeLocalExceedance.m
-│   │   ├── computeLocalExceedanceCF.m
-│   │   ├── computeLocalExceedanceFromGains.m
-│   │   ├── computeProperComplexLocalExceedanceFromGains.m
-│   │   ├── computeProperComplexTrajectoryMonteCarlo.m
-│   │   ├── computeProperComplexTransitionCDF.m
-│   │   ├── computeTrajectoryMonteCarlo.m
-│   │   ├── computeTransitionCDF.m
-│   │   ├── computeTransitionQuantiles.m
-│   │   ├── evaluateEnergyEnvelope.m
-│   │   ├── evaluateThresholdAmplitudeFamily.m
-│   │   ├── generalizedQuadraticFormTail.m
-│   │   ├── solveQuadraticFormThreshold.m
-│   │   ├── solveThresholdForTargetProbability.m
-│   │   └── validateProbabilityCurves.m
-│   │
-│   └── reduction/
-│       ├── applyComplexReductionToMatrixFamily.m
-│       ├── applyReductionToFactors.m
-│       ├── applyReductionToMatrixFamily.m
-│       ├── buildComplexIntegratedBasis.m
-│       ├── buildEigenspaceSnapshotBasis.m
-│       ├── buildIntegratedTransitionMatrix.m
-│       ├── buildTransitionBasis.m
-│       ├── computeCoupledComplexRankStudy.m
-│       ├── computeCoupledRankStudy.m
-│       ├── computeReductionDiagnostics.m
-│       ├── computeTrapezoidalWeights.m
-│       ├── enrichTransitionBasisGreedy.m
-│       ├── selectRankFromCoupledStudy.m
-│       ├── selectTransitionStations.m
-│       ├── validateComplexReductionBasis.m
-│       └── validateReductionBasis.m
-│
-├── examples/
-│   └── plotSyntheticProblem.m
-│
-├── tests/
-│   ├── runHermiteMaximumTests.m
-│   ├── runOWNSCoupledReductionStudy.m
-│   ├── runOWNSGaussianConventionStudy.m
-│   ├── runOWNSLocalProbabilityCheck.m
-│   ├── runOWNSProperComplexRankStudy.m
-│   ├── runOWNSReductionStudy.m
-│   ├── runOWNSSmokeTest.m
-│   ├── runOWNSThresholdStudy.m
-│   ├── runProperComplexRegressionTests.m
-│   ├── runQuadraticFormTailTests.m
-│   ├── runRQMCTests.m
-│   └── runSyntheticRegressionTests.m
-│
-└── data/
-    └── .gitkeep
+â”œâ”€â”€ README.md
+â”œâ”€â”€ run_first_transition.m
+â”‚
+â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ angular/
+â”‚   â”‚   â”œâ”€â”€ computeProperComplexRQMCCDF.m
+â”‚   â”‚   â”œâ”€â”€ computeRQMCCDF.m
+â”‚   â”‚   â”œâ”€â”€ computeRQMCCDFConverged.m
+â”‚   â”‚   â”œâ”€â”€ evaluateAngularReplicate.m
+â”‚   â”‚   â”œâ”€â”€ generateAngularRule.m
+â”‚   â”‚   â”œâ”€â”€ generateProperComplexAngularRule.m
+â”‚   â”‚   â”œâ”€â”€ generateScrambledSobolNormals.m
+â”‚   â”‚   â”œâ”€â”€ nestedNormalsToDirections.m
+â”‚   â”‚   â””â”€â”€ validateAngularRule.m
+â”‚   â”‚
+â”‚   â”œâ”€â”€ data/
+â”‚   â”‚   â”œâ”€â”€ convertFactorOrientation.m
+â”‚   â”‚   â”œâ”€â”€ extractOWNSCoordinate.m
+â”‚   â”‚   â”œâ”€â”€ inspectOWNSData.m
+â”‚   â”‚   â”œâ”€â”€ loadOWNSProblem.m
+â”‚   â”‚   â”œâ”€â”€ loadProblemData.m
+â”‚   â”‚   â”œâ”€â”€ makeSyntheticProblem.m
+â”‚   â”‚   â”œâ”€â”€ runOWNSWorkflow.m
+â”‚   â”‚   â”œâ”€â”€ selectOWNSDataFile.m
+â”‚   â”‚   â””â”€â”€ validateProblemData.m
+â”‚   â”‚
+â”‚   â”œâ”€â”€ diagnostics/
+â”‚   â”‚   â””â”€â”€ computeDirectionalDiagnostics.m
+â”‚   â”‚
+â”‚   â”œâ”€â”€ matrices/
+â”‚   â”‚   â”œâ”€â”€ buildAFromOWNS.m
+â”‚   â”‚   â”œâ”€â”€ buildGFamily.m
+â”‚   â”‚   â”œâ”€â”€ buildGFromAFamily.m
+â”‚   â”‚   â”œâ”€â”€ buildGprimeFamily.m
+â”‚   â”‚   â”œâ”€â”€ validateGFamily.m
+â”‚   â”‚   â””â”€â”€ validateGprimeFamily.m
+â”‚   â”‚
+â”‚   â”œâ”€â”€ maxima/
+â”‚   â”‚   â”œâ”€â”€ computeRunningMaxAdaptive.m
+â”‚   â”‚   â”œâ”€â”€ computeRunningMaxGrid.m
+â”‚   â”‚   â”œâ”€â”€ computeRunningMaxHermite.m
+â”‚   â”‚   â”œâ”€â”€ cubicHermiteIntervalMaximum.m
+â”‚   â”‚   â””â”€â”€ validateRunningMax.m
+â”‚   â”‚
+â”‚   â”œâ”€â”€ plotting/
+â”‚   â”‚   â””â”€â”€ plotTransitionResults.m
+â”‚   â”‚
+â”‚   â”œâ”€â”€ probability/
+â”‚   â”‚   â”œâ”€â”€ buildRQMCEnergyEnvelope.m
+â”‚   â”‚   â”œâ”€â”€ buildThresholdSweepValues.m
+â”‚   â”‚   â”œâ”€â”€ buildTransitionThreshold.m
+â”‚   â”‚   â”œâ”€â”€ computeLocalExceedance.m
+â”‚   â”‚   â”œâ”€â”€ computeLocalExceedanceCF.m
+â”‚   â”‚   â”œâ”€â”€ computeLocalExceedanceFromGains.m
+â”‚   â”‚   â”œâ”€â”€ computeProperComplexLocalExceedanceFromGains.m
+â”‚   â”‚   â”œâ”€â”€ computeProperComplexTrajectoryMonteCarlo.m
+â”‚   â”‚   â”œâ”€â”€ computeProperComplexTransitionCDF.m
+â”‚   â”‚   â”œâ”€â”€ computeTrajectoryMonteCarlo.m
+â”‚   â”‚   â”œâ”€â”€ computeTransitionCDF.m
+â”‚   â”‚   â”œâ”€â”€ computeTransitionQuantiles.m
+â”‚   â”‚   â”œâ”€â”€ evaluateEnergyEnvelope.m
+â”‚   â”‚   â”œâ”€â”€ evaluateThresholdAmplitudeFamily.m
+â”‚   â”‚   â”œâ”€â”€ generalizedQuadraticFormTail.m
+â”‚   â”‚   â”œâ”€â”€ solveQuadraticFormThreshold.m
+â”‚   â”‚   â”œâ”€â”€ solveThresholdForTargetProbability.m
+â”‚   â”‚   â””â”€â”€ validateProbabilityCurves.m
+â”‚   â”‚
+â”‚   â””â”€â”€ reduction/
+â”‚       â”œâ”€â”€ applyComplexReductionToMatrixFamily.m
+â”‚       â”œâ”€â”€ applyReductionToFactors.m
+â”‚       â”œâ”€â”€ applyReductionToMatrixFamily.m
+â”‚       â”œâ”€â”€ buildComplexIntegratedBasis.m
+â”‚       â”œâ”€â”€ buildEigenspaceSnapshotBasis.m
+â”‚       â”œâ”€â”€ buildIntegratedTransitionMatrix.m
+â”‚       â”œâ”€â”€ buildTransitionBasis.m
+â”‚       â”œâ”€â”€ computeCoupledComplexRankStudy.m
+â”‚       â”œâ”€â”€ computeCoupledRankStudy.m
+â”‚       â”œâ”€â”€ computeReductionDiagnostics.m
+â”‚       â”œâ”€â”€ computeTrapezoidalWeights.m
+â”‚       â”œâ”€â”€ enrichTransitionBasisGreedy.m
+â”‚       â”œâ”€â”€ selectRankFromCoupledStudy.m
+â”‚       â”œâ”€â”€ selectTransitionStations.m
+â”‚       â”œâ”€â”€ validateComplexReductionBasis.m
+â”‚       â””â”€â”€ validateReductionBasis.m
+â”‚
+â”œâ”€â”€ examples/
+â”‚   â””â”€â”€ plotSyntheticProblem.m
+â”‚
+â”œâ”€â”€ tests/
+â”‚   â”œâ”€â”€ runHermiteMaximumTests.m
+â”‚   â”œâ”€â”€ runOWNSCoupledReductionStudy.m
+â”‚   â”œâ”€â”€ runOWNSGaussianConventionStudy.m
+â”‚   â”œâ”€â”€ runOWNSLocalProbabilityCheck.m
+â”‚   â”œâ”€â”€ runOWNSProperComplexRankStudy.m
+â”‚   â”œâ”€â”€ runOWNSReductionStudy.m
+â”‚   â”œâ”€â”€ runOWNSSmokeTest.m
+â”‚   â”œâ”€â”€ runOWNSThresholdStudy.m
+â”‚   â”œâ”€â”€ runProperComplexRegressionTests.m
+â”‚   â”œâ”€â”€ runQuadraticFormTailTests.m
+â”‚   â”œâ”€â”€ runRQMCTests.m
+â”‚   â””â”€â”€ runSyntheticRegressionTests.m
+â”‚
+â””â”€â”€ data/
+    â””â”€â”€ .gitkeep
 ```
 
 Some files shown above may remain stubs until their corresponding capability is completed. In particular, the adaptive maximum finder and direct OWNS marching interface are not part of the current production path.
@@ -438,11 +438,11 @@ cfg.threshold.autoMaxMeanFactor = 1;
 
 This uses:
 
-\[
+$$
 e_{\mathrm{thres}}
 =
-\max_x \mathbb E[e(x)].
-\]
+\max_x \\mathbb{E}[e(x)].
+;
 
 This is intended only for numerical development.
 
@@ -489,11 +489,7 @@ Use:
 cfg.gaussianConvention = 'real';
 ```
 
-The radial law is:
-
-\[
-R^2\sim\chi_r^2.
-\]
+The radial law is: $R^2 \sim \chi_r^2$.
 
 ### Sensitivity model: proper-complex coefficients
 
@@ -506,11 +502,7 @@ qRealization = B * z;
 
 Use the proper-complex probability functions and complex-specific reduction basis.
 
-The radial law is:
-
-\[
-R^2\sim\operatorname{Gamma}(r,1).
-\]
+The radial law is: $R^2 \sim \Gamma(r,1)$.
 
 The proper-complex model represents additional independent random phase variation in each latent coefficient. It is not currently the primary physical model.
 
@@ -553,7 +545,7 @@ cfg.angular.method = 'circle';
 cfg.angular.numDirections = 4096;
 ```
 
-### Scrambled Sobol’ RQMC
+### Scrambled SobolÃ¢â‚¬â„¢ RQMC
 
 For moderate or high stochastic dimension:
 
@@ -570,11 +562,11 @@ cfg.angular.probabilityClip = 1e-12;
 
 RQMC replicates are evaluated using common local and first-transition directional samples, preserving:
 
-\[
+$$
 p_{\mathrm{local}}(x)
 \leq
 F_{X_{\mathrm{tr}}}(x)
-\]
+;
 
 replicate by replicate.
 
@@ -592,11 +584,11 @@ cfg.reduction.integrationWeight = 'uniform';
 
 The integrated matrix is:
 
-\[
+$$
 K
 =
 \int G(x)\,dx.
-\]
+;
 
 Its leading eigenvectors define the reduced stochastic basis.
 
@@ -647,20 +639,11 @@ The deterministic method evaluates the local generalized quadratic-form tail usi
 
 ## Threshold and amplitude studies
 
-For a constant threshold and inlet amplitude multiplier \(\epsilon\),
+For a constant threshold and inlet amplitude multiplier $\epsilon$,
 
-\[
-F_{X_{\mathrm{tr}}}(x)
-=
-\mathbb E_u
-\left[
-    \overline F_{\chi_r^2}
-    \left(
-        \frac{e_{\mathrm{thres}}}
-        {\epsilon^2 M_u(x)}
-    \right)
-\right].
-\]
+$$
+F_{X_{\mathrm{tr}}}(x)=E_u\left[\bar F_{\chi_r^2}\left(\frac{e_{\mathrm{thres}}}{\epsilon^2 M_u(x)}\right)\right].
+$$
 
 A reusable unnormalized energy envelope permits many thresholds and amplitudes to be evaluated without repeating the directional maximum calculation.
 
@@ -720,7 +703,7 @@ runRQMCTests
 
 Verifies:
 
-- scrambled Sobol’ convergence;
+- scrambled Sobolâ€™ convergence;
 - deterministic reproducibility under fixed seeds;
 - agreement with a deterministic circular reference;
 - replicate uncertainty.
@@ -806,13 +789,13 @@ F(xmax) = 0.3461875
 Using the real-coefficient model and the provisional automatic threshold, the full-rank transition probability was approximately:
 
 ```text
-F(xmax) ≈ 0.447
+F(xmax) Ã¢â€°Ë† 0.447
 ```
 
 Using proper-complex coefficients produced a larger probability of approximately:
 
 ```text
-F(xmax) ≈ 0.483
+F(xmax) Ã¢â€°Ë† 0.483
 ```
 
 These values are for numerical development only because the physical transition threshold has not yet been calibrated.
@@ -943,11 +926,6 @@ output/*.mat
 
 !tests/reference_data/*.mat
 ```
-referenceArcLength
-wallX
-referenceX
-xi
-```
 
 For curved geometries, wall arc length is computed from the physical `x`, `y`, and optionally `z` coordinates.
 
@@ -964,11 +942,11 @@ cfg.threshold.autoMaxMeanFactor = 1;
 
 This uses:
 
-\[
+$$
 e_{\mathrm{thres}}
 =
-\max_x \mathbb E[e(x)].
-\]
+\max_x \\mathbb{E}[e(x)].
+;
 
 This is intended only for numerical development.
 
@@ -1015,11 +993,7 @@ Use:
 cfg.gaussianConvention = 'real';
 ```
 
-The radial law is:
-
-\[
-R^2\sim\chi_r^2.
-\]
+The radial law is: $R^2 \sim \chi_r^2$.
 
 ### Sensitivity model: proper-complex coefficients
 
@@ -1032,11 +1006,7 @@ qRealization = B * z;
 
 Use the proper-complex probability functions and complex-specific reduction basis.
 
-The radial law is:
-
-\[
-R^2\sim\operatorname{Gamma}(r,1).
-\]
+The radial law is: $R^2 \sim \Gamma(r,1)$.
 
 The proper-complex model represents additional independent random phase variation in each latent coefficient. It is not currently the primary physical model.
 
@@ -1079,7 +1049,7 @@ cfg.angular.method = 'circle';
 cfg.angular.numDirections = 4096;
 ```
 
-### Scrambled Sobol’ RQMC
+### Scrambled SobolÃ¢â‚¬â„¢ RQMC
 
 For moderate or high stochastic dimension:
 
@@ -1096,11 +1066,11 @@ cfg.angular.probabilityClip = 1e-12;
 
 RQMC replicates are evaluated using common local and first-transition directional samples, preserving:
 
-\[
+$$
 p_{\mathrm{local}}(x)
 \leq
 F_{X_{\mathrm{tr}}}(x)
-\]
+;
 
 replicate by replicate.
 
@@ -1118,11 +1088,11 @@ cfg.reduction.integrationWeight = 'uniform';
 
 The integrated matrix is:
 
-\[
+$$
 K
 =
 \int G(x)\,dx.
-\]
+;
 
 Its leading eigenvectors define the reduced stochastic basis.
 
@@ -1173,20 +1143,11 @@ The deterministic method evaluates the local generalized quadratic-form tail usi
 
 ## Threshold and amplitude studies
 
-For a constant threshold and inlet amplitude multiplier \(\epsilon\),
+For a constant threshold and inlet amplitude multiplier $\epsilon$,
 
-\[
-F_{X_{\mathrm{tr}}}(x)
-=
-\mathbb E_u
-\left[
-\overline F_{\chi_r^2}
-\left(
-\frac{e_{\mathrm{thres}}}
-{\epsilon^2 M_u(x)}
-\right)
-\right].
-\]
+$$
+F_{X_{\mathrm{tr}}}(x)=E_u\left[\bar F_{\chi_r^2}\left(\frac{e_{\mathrm{thres}}}{\epsilon^2 M_u(x)}\right)\right].
+$$
 
 A reusable unnormalized energy envelope permits many thresholds and amplitudes to be evaluated without repeating the directional maximum calculation.
 
@@ -1246,7 +1207,7 @@ runRQMCTests
 
 Verifies:
 
-- scrambled Sobol’ convergence;
+- scrambled SobolÃ¢â‚¬â„¢ convergence;
 - deterministic reproducibility under fixed seeds;
 - agreement with a deterministic circular reference;
 - replicate uncertainty.
@@ -1332,13 +1293,13 @@ F(xmax) = 0.3461875
 Using the real-coefficient model and the provisional automatic threshold, the full-rank transition probability was approximately:
 
 ```text
-F(xmax) ≈ 0.447
+F(xmax) Ã¢â€°Ë† 0.447
 ```
 
 Using proper-complex coefficients produced a larger probability of approximately:
 
 ```text
-F(xmax) ≈ 0.483
+F(xmax) Ã¢â€°Ë† 0.483
 ```
 
 These values are for numerical development only because the physical transition threshold has not yet been calibrated.
@@ -1451,11 +1412,9 @@ slurm-*.out
 *.e
 ```
 
-If you intend to commit small MAT-files for regression tests, replace the broad `*.mat` rule with:
 
-```gitignore
-data/*.mat
-results/*.mat
-output/*.mat
 
-!tests/reference_data/*.mat
+
+
+
+
