@@ -1,0 +1,58 @@
+# MATLAB temporary and autosave files
+*.asv
+*.m~
+*.autosave
+
+# MATLAB generated files
+*.mex*
+*.mlappinstall
+*.mltbx
+
+# Large data and result files
+*.mat
+*.h5
+*.hdf5
+
+# Generated output directories
+results/
+figures/
+output/
+tmp/
+temp/
+
+# Keep empty project data directory
+!data/.gitkeep
+
+# Profiling and coverage output
+profile_results/
+coverage/
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+
+# Editor and IDE settings
+.vscode/
+.idea/
+
+# Slurm or cluster output
+slurm-*.out
+*.o
+*.e
+
+# Exclude image files in the figures directory even if tracked elsewhere
+figures/**/*.png
+figures/**/*.jpg
+figures/**/*.jpeg
+figures/**/*.gif
+figures/**/*.webp
+figures/**/*.svg
+figures/**/*.bmp
+figures/**/*.tif
+figures/**/*.tiff
+
+# If you want to commit small MAT files for regression tests, use a narrower rule instead:
+# data/*.mat
+# results/*.mat
+# output/*.mat
+# !tests/reference_data/*.mat
