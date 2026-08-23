@@ -585,9 +585,7 @@ cfg.reduction.integrationWeight = 'uniform';
 The integrated matrix is:
 
 $$
-K
-=
-\int G(x)\,dx.
+K = \int G(x)\,dx
 $$
 
 Its leading eigenvectors define the reduced stochastic basis.
