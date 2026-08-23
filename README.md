@@ -439,9 +439,7 @@ cfg.threshold.autoMaxMeanFactor = 1;
 This uses:
 
 $$
-e_{\mathrm{thres}}
-=
-\max_x \mathbb{E}[e(x)].
+e_{\mathrm{thres}} = \max_x \mathbb{E}[e(x)]
 $$
 
 This is intended only for numerical development.
