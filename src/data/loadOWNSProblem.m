@@ -63,10 +63,23 @@ inspection = inspectOWNSData(solution, cfg);
 [A, matrixInfo] = ...
     buildAFromOWNS(solution, cfg);
 
+% Some structural diagnostics operate directly on A(x) and do not require
+% a physical transition threshold. Use a neutral unit threshold when no
+% threshold configuration is supplied.
+if isfield(cfg, 'threshold') && ...
+        ~isempty(cfg.threshold)
+
+    thresholdCfg = cfg.threshold;
+else
+    thresholdCfg = struct();
+    thresholdCfg.method = 'specifiedScalar';
+    thresholdCfg.value = 1;
+    thresholdCfg.warnIfProvisional = true;
+end
+
 [eThresh, thresholdInfo] = ...
     buildTransitionThreshold( ...
-        xCoordinate, A, cfg.threshold);
-
+        xCoordinate, A, thresholdCfg);
 meta = struct();
 
 meta.source = sourceDescription;
