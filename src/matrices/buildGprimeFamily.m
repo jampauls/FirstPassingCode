@@ -174,7 +174,14 @@ for n = 1:Nx
 
     weights = momentMatrix \ [0; 1; 0];
 
-    Gpn = zeros(r, r);
+    % A sparse accumulator preserves block-diagonal sparsity when G is
+    % sparse (e.g. the ensemble workflow), while remaining correct for
+    % dense G since sparse-plus-dense addition yields a dense result.
+    if issparse(G{indices(1)})
+        Gpn = sparse(r, r);
+    else
+        Gpn = zeros(r, r);
+    end
 
     for j = 1:3
         Gpn = Gpn + weights(j) * G{indices(j)};
