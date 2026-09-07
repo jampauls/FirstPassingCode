@@ -63,7 +63,7 @@ cfg.isPhysicalStateComplex = true;
 %   'synthetic'     : use analytical/synthetic test problem
 %   'ownsMarch'     : call OWNS propagator to generate B(x)
 %   'ownsUserSelect': opens uigetfile to allow user to select file
-cfg.dataSource = 'ownsMarch';
+cfg.dataSource = 'ownsmatfile';
 
 % File path for precomputed data, if cfg.dataSource = 'matfile'.
 cfg.dataFile = fullfile('data', 'ninth_Run_i_1_j_1_solution.mat');
@@ -230,7 +230,7 @@ cfg.numerics.useUpperTail = true;
 cfg.owns = struct();
 
 cfg.owns.dataFile = ...
-    '/data2/jampauls/DataforFigures/SaveData/FirstPassingCode/data/ninth_Run_i_1_j_1_solution.mat';
+    cfg.dataFile;
 
 cfg.owns.solutionVariable = 'solution';
 
