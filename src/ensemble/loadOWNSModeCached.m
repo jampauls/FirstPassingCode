@@ -24,6 +24,12 @@ function mode = loadOWNSModeCached(dataFile, cfg)
 %                                    left in place after the run so later
 %                                    runs reuse it. Default:
 %                                    'data/reducedCache'.
+%   cfg.owns.numCacheStations        target number of downsampled
+%                                    streamwise stations retained in the
+%                                    cache (see downsampleOWNSStations).
+%   cfg.owns.cacheXCutoffCoefficient optional 1/sqrt(omega) domain cutoff
+%                                    applied before downsampling (see
+%                                    downsampleOWNSStations).
 %
 % MATLAB version: R2020b
 
@@ -104,10 +110,24 @@ if isfield(cfg, 'coordinates')
     end
 end
 
-% Encodes every setting that changes the cached A(x) or x so a changed
-% configuration cannot silently load a stale cache.
-name = sprintf('%s_ev%d_%s_ref%d_z%d_zo%d.mat', ...
+numCacheStations = 0;
+if isfield(cfg, 'owns') && isfield(cfg.owns, 'numCacheStations') && ...
+        ~isempty(cfg.owns.numCacheStations)
+    numCacheStations = cfg.owns.numCacheStations;
+end
+
+cutoffCoefficient = 0;
+if isfield(cfg, 'owns') && isfield(cfg.owns, 'cacheXCutoffCoefficient') && ...
+        ~isempty(cfg.owns.cacheXCutoffCoefficient)
+    cutoffCoefficient = cfg.owns.cacheXCutoffCoefficient;
+end
+
+% Encodes every setting that changes the cached A(x) or x (including the
+% station-downsampling parameters) so a changed configuration cannot
+% silently load a stale or mismatched cache.
+name = sprintf('%s_ev%d_%s_ref%d_z%d_zo%d_ns%d_co%g.mat', ...
     baseName, numEnergyVariables, coordMethod, ...
-    referenceIndex, includeZ, zeroOrigin);
+    referenceIndex, includeZ, zeroOrigin, ...
+    numCacheStations, cutoffCoefficient);
 
 end

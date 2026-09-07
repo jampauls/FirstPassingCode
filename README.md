@@ -86,7 +86,10 @@ The code currently supports:
 - local-versus-history-aware memory corrections;
 - threshold and inlet-amplitude sensitivity studies;
 - interactive OWNS file selection with `uigetfile`;
-- real-versus-proper-complex Gaussian convention studies.
+- real-versus-proper-complex Gaussian convention studies;
+- multi-mode ensemble first-transition probability for total energy summed across an arbitrary number of independent \((\omega,\beta)\) OWNS solution files;
+- a persistent, staleness-aware reduced-data cache that avoids re-reading large raw OWNS files across runs;
+- tunable streamwise-station downsampling (with an optional \(1/\sqrt{\omega}\) domain cutoff) applied before the cache is built.
 
 ## MATLAB requirements
 
@@ -124,7 +127,10 @@ cfg.dataSource = 'ownsMatFile';
 ```text
 project_root/
 ├── README.md
+├── CHANGELOG.md
 ├── run_first_transition.m
+├── OWNS_run_first_transition_latest.m
+├── OWNS_run_first_transition_ensemble.m
 │
 ├── src/
 │   ├── angular/
@@ -151,6 +157,17 @@ project_root/
 │   │
 │   ├── diagnostics/
 │   │   └── computeDirectionalDiagnostics.m
+│   │
+│   ├── ensemble/
+│   │   ├── assembleBlockDiagonalFamily.m
+│   │   ├── buildEnsembleTransitionThreshold.m
+│   │   ├── discoverOWNSEnsembleFiles.m
+│   │   ├── downsampleOWNSStations.m
+│   │   ├── interpMatrixFamilyToGrid.m
+│   │   ├── loadOWNSModeCached.m
+│   │   ├── loadOWNSModeRaw.m
+│   │   ├── reduceEnsembleMode.m
+│   │   └── runOWNSEnsembleWorkflow.m
 │   │
 │   ├── matrices/
 │   │   ├── buildAFromOWNS.m
@@ -213,7 +230,10 @@ project_root/
 │
 ├── tests/
 │   ├── runHermiteMaximumTests.m
+│   ├── runOWNSCacheDownsamplingSweepTest.m
+│   ├── runOWNSCacheStalenessTest.m
 │   ├── runOWNSCoupledReductionStudy.m
+│   ├── runOWNSEnsembleSmokeTest.m
 │   ├── runOWNSGaussianConventionStudy.m
 │   ├── runOWNSLocalProbabilityCheck.m
 │   ├── runOWNSProperComplexRankStudy.m
@@ -226,7 +246,8 @@ project_root/
 │   └── runSyntheticRegressionTests.m
 │
 └── data/
-    └── .gitkeep
+    ├── .gitkeep
+    └── reducedCache/        (generated; not tracked in Git)
 ```
 
 Some files shown above may remain stubs until their corresponding capability is completed. In particular, the adaptive maximum finder and direct OWNS marching interface are not part of the current production path.
@@ -659,6 +680,57 @@ cfg.thresholdSweep.referenceMethod = 'maximumMeanEnergy';
 
 A target terminal probability can also be used to solve for a constant threshold.
 
+## Multi-mode ensemble workflow
+
+The full perturbation is a linear combination of independent \((\omega_i,\beta_j)\) modes, each discretized into its own OWNS solution MAT-file. `OWNS_run_first_transition_ensemble.m` combines every mode file in a directory and computes the first-transition probability for the **total** disturbance energy crossing a threshold, rather than any single mode's energy:
+
+$$
+e_{\mathrm{total}}(x)=\sum_i w_i^\top A_i(x) w_i, \quad w_i \sim N(0,I_{r_i}) \text{ independent}.
+$$
+
+Because the modes are independent, this is a quadratic form in the concatenated coefficient vector with a block-diagonal matrix \(A_{\mathrm{total}}(x)=\mathrm{blkdiag}(A_1(x),\dots,A_M(x))\), so the existing angular/maxima/probability machinery is reused unchanged.
+
+```matlab
+cfg.owns.ensembleDirectory = fullfile('data');
+cfg.owns.ensembleReferenceFile = [];   % mode whose grid defines the common x
+
+cfg.reduction.method = 'integrated';
+cfg.reduction.perModeTargetRank = 4;   % reduced rank applied to every mode
+```
+
+The workflow runs in two passes: an inexpensive first pass accumulates the total mean/variance energy across every mode to define the combined threshold, and a second pass normalizes, reduces, and block-assembles each mode's \(G_i(x)\). Run it with:
+
+```matlab
+results = runOWNSEnsembleWorkflow(cfg);
+```
+
+or the full driver script:
+
+```matlab
+OWNS_run_first_transition_ensemble
+```
+
+### Reduced-data cache
+
+Building \(A_i(x)\) requires reading each mode's full propagated factor `solution.q`, which can exceed tens of gigabytes per file for high-\(\omega\) cases and cannot all be held in memory at once. `loadOWNSModeCached` reads each raw file only once, compresses it to the much smaller `{x, A, meta}` form, and saves it to a persistent cache directory:
+
+```matlab
+cfg.owns.reducedCacheDirectory = fullfile('data', 'reducedCache');
+```
+
+Every later pass or run reuses the cached copy instead of re-reading the raw file. The cache is invalidated automatically if a raw file's modification time or size changes, and a raw file with no cache entry yet is built without disturbing any other cached mode.
+
+### Streamwise-station downsampling
+
+The OWNS march itself needs on the order of 10,000 streamwise stations to resolve its dynamics, far more than are needed to sample the propagated stochastic structure for first-transition prediction. `downsampleOWNSStations` reduces the retained station count before any per-station matrix is built and before the cache is saved:
+
+```matlab
+cfg.owns.numCacheStations = 400;          % target retained stations
+cfg.owns.cacheXCutoffCoefficient = [];    % optional 1/sqrt(omega) domain cutoff
+```
+
+When `cacheXCutoffCoefficient` is set, only stations with \((x-x_1) \le \text{coefficient}/\sqrt{|\omega|}\) are eligible before the station budget is spent, concentrating resolution near the inlet for high-frequency modes whose relevant dynamics decay over that same shrinking length scale.
+
 ## Tests
 
 Run the following tests from the MATLAB command window.
@@ -764,6 +836,30 @@ runOWNSThresholdStudy
 
 Evaluates constant-threshold and inlet-amplitude sensitivity using a reusable energy envelope.
 
+### Ensemble smoke test
+
+```matlab
+runOWNSEnsembleSmokeTest
+```
+
+Runs the multi-mode total-energy workflow against every OWNS file in `data/`, and verifies that a cold-cache run and a warm-cache run reuse the cache and reproduce identical probability curves.
+
+### Reduced-cache staleness
+
+```matlab
+runOWNSCacheStalenessTest
+```
+
+Verifies that an unchanged raw file is never rebuilt, a raw file whose modification time or size changes is detected as stale and rebuilt, and a newly added raw file is cached without disturbing other cache entries.
+
+### Cache downsampling sweep
+
+```matlab
+runOWNSCacheDownsamplingSweepTest
+```
+
+Sweeps `cfg.owns.numCacheStations` across 5 resolutions and verifies that low-resolution points span the full streamwise grid while high-resolution points, once the \(1/\sqrt{\omega}\) cutoff is enabled, are truncated in proportion to each mode's frequency.
+
 ## Representative verified results
 
 ### Synthetic two-dimensional test
@@ -805,8 +901,7 @@ The following capabilities are not currently part of the verified production pat
 - adaptive insertion of new physical OWNS stations;
 - nonlinear disturbance propagation;
 - DNS threshold calibration;
-- broadband joint reconstruction across multiple \((\omega,\beta)\) pairs;
-- directory-wide processing of all spectral pairs;
+- broadband joint reconstruction across multiple \((\omega,\beta)\) pairs (the ensemble workflow combines total energy across modes, but does not reconstruct a joint physical field);
 - physical-field plotting and reconstruction inside this repository;
 - automatic parallel RQMC execution.
 
@@ -822,8 +917,7 @@ Current priorities are:
 4. add optional parallel execution over RQMC replicates;
 5. implement survivor-conditioned stochastic covariance;
 6. implement transition-conditioned directional diagnostics;
-7. design directory-wide processing of all \((\omega,\beta)\) pairs;
-8. design joint reconstruction over the full spectral space.
+7. design joint reconstruction over the full spectral space.
 
 The broadband reconstruction requires a deliberate modeling decision about spectral correlations, phase conventions, and whether transition is defined from summed energy or another joint spectral statistic.
 
@@ -857,7 +951,7 @@ results.reductionInfo
 
 Large OWNS MAT-files should not be committed to Git. Store them externally and configure their paths at runtime.
 
-Likewise, generated result files, figures, and temporary MATLAB files should generally be excluded unless intentionally added as small regression references.
+Likewise, generated result files, figures, and temporary MATLAB files should generally be excluded unless intentionally added as small regression references. The `data/reducedCache` directory generated by the ensemble workflow's cache is excluded the same way, since it is entirely derived from the raw OWNS files.
 
 ## License
 

@@ -51,6 +51,21 @@ cfg.owns.ensembleReferenceFile = [];
 % solutions.
 cfg.owns.reducedCacheDirectory = fullfile('data', 'reducedCache');
 
+% Target number of streamwise stations retained when building the cache.
+% The largest OWNS files carry ~10,000 stations to resolve the march
+% itself, far more than needed to sample the propagated stochastic
+% structure for first-transition prediction. Leave empty to keep every
+% station (no downsampling).
+cfg.owns.numCacheStations = 400;
+
+% Optional 1/sqrt(omega) domain cutoff applied before the station subset
+% above is chosen: only stations with (x - x(1)) <= coefficient/sqrt(|w|)
+% are eligible. Useful for concentrating a fixed station budget near the
+% inlet for high-frequency modes, whose relevant dynamics occur over a
+% correspondingly shorter streamwise distance. Leave empty to use the
+% full streamwise domain regardless of omega.
+cfg.owns.cacheXCutoffCoefficient = [];
+
 cfg.owns.solutionVariable = 'solution';
 cfg.owns.numEnergyVariables = 5;
 cfg.owns.numStateVariables = 6;

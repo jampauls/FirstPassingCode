@@ -8,10 +8,17 @@ function mode = loadOWNSModeRaw(dataFile, cfg)
 % processing, where the transition threshold is defined from the total
 % energy summed across every mode.
 %
+% The raw streamwise grid is downsampled (see downsampleOWNSStations) via
+% cfg.owns.numCacheStations/cfg.owns.cacheXCutoffCoefficient before any
+% per-station energy matrix is built, so the expensive part of this
+% function only runs at the reduced set of stations that are actually
+% cached.
+%
 % Output fields:
-%   mode.x      streamwise coordinate for this mode
+%   mode.x      streamwise coordinate for this mode (possibly downsampled)
 %   mode.A      cell array of real energy matrices A_i(x)
-%   mode.meta   metadata, including meta.omega and meta.beta
+%   mode.meta   metadata, including meta.omega, meta.beta,
+%               meta.numRawStations, and meta.numCacheStations
 %
 % MATLAB version: R2020b
 
@@ -37,6 +44,10 @@ end
 solution = loaded.(solutionVariable);
 clear loaded;
 
+numRawStations = size(solution.q, 2);
+
+solution = downsampleOWNSStations(solution, cfg);
+
 inspection = inspectOWNSData(solution, cfg);
 
 [xCoordinate, coordinateMeta] = ...
@@ -52,6 +63,8 @@ meta.Ny = inspection.Ny;
 meta.energyDimension = inspection.energyDimension;
 meta.coordinate = coordinateMeta;
 meta.matrixInfo = matrixInfo;
+meta.numRawStations = numRawStations;
+meta.numCacheStations = inspection.Nx;
 
 if isfield(solution, 'w')
     meta.omega = solution.w;
