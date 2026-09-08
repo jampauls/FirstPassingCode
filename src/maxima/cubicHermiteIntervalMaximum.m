@@ -1,7 +1,7 @@
 function [maximumValue, maximumX, info] = ...
     cubicHermiteIntervalMaximum( ...
-        xLeft, xRight, valueLeft, valueRight, ...
-        derivativeLeft, derivativeRight, options)
+    xLeft, xRight, valueLeft, valueRight, ...
+    derivativeLeft, derivativeRight, options)
 %CUBICHERMITEINTERVALMAXIMUM Maximum of a cubic Hermite interpolant.
 %
 %   [maximumValue, maximumX, info] = ...
@@ -87,7 +87,9 @@ for k = 1:K
     polynomialTolerance = ...
         options.polynomialTolerance * coefficientScale;
 
-    candidates = [0; 1];
+    candidates = zeros(4, 1);
+    candidates(1:2) = [0; 1];
+    numCandidates = 2;
 
     % Derivative:
     %
@@ -126,9 +128,10 @@ for k = 1:K
                 if sCandidate > options.rootTolerance && ...
                         sCandidate < 1 - options.rootTolerance
 
-                    if all(abs(candidates - sCandidate) > ...
+                    if all(abs(candidates(1:numCandidates) - sCandidate) > ...
                             options.rootTolerance)
-                        candidates(end + 1, 1) = sCandidate; %#ok<AGROW>
+                        numCandidates = numCandidates + 1;
+                        candidates(numCandidates) = sCandidate;
                     end
 
                 elseif abs(sCandidate) <= options.rootTolerance
@@ -146,9 +149,12 @@ for k = 1:K
 
         if sCandidate > options.rootTolerance && ...
                 sCandidate < 1 - options.rootTolerance
-            candidates(end + 1, 1) = sCandidate;
+            numCandidates = numCandidates + 1;
+            candidates(numCandidates) = sCandidate;
         end
     end
+
+    candidates = candidates(1:numCandidates);
 
     candidateValues = ...
         ((c3(k) * candidates + c2(k)) .* candidates ...

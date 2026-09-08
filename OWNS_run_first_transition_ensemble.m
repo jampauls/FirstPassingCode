@@ -24,6 +24,18 @@ addpath(genpath(fullfile(pwd, 'data')));
 addpath(genpath(fullfile(pwd, 'tests')));
 addpath(genpath(fullfile(pwd, 'figures')));
 
+mainDirectory = fileparts(mfilename('fullpath'));
+outputDirectory = fullfile(mainDirectory, 'output');
+
+if ~isfolder(outputDirectory)
+    [created, message] = mkdir(outputDirectory);
+    if ~created
+        error('OWNS_run_first_transition_ensemble:OutputDirectory', ...
+            'Could not create output directory "%s": %s', ...
+            outputDirectory, message);
+    end
+end
+
 %% ========================================================================
 %  1. User configuration
 % ========================================================================
@@ -203,3 +215,16 @@ end
 if cfg.plot.enable
     plotTransitionResults(x, prob, pLocal, post, cfg);
 end
+
+transitionLikelihood = struct();
+transitionLikelihood.x = x;
+transitionLikelihood.prob = prob;
+transitionLikelihood.post = post;
+transitionLikelihood.thresholdInfo = results.thresholdInfo;
+transitionLikelihood.cfg = cfg;
+
+outputFile = fullfile( ...
+    outputDirectory, 'first_transition_ensemble_results.mat');
+
+save(outputFile, 'transitionLikelihood', '-v7.3');
+fprintf('Saved transition likelihood data: %s\n', outputFile);

@@ -3,6 +3,18 @@ function plotTransitionResults(x, prob, pLocal, post, cfg)
 
 x = x(:);
 
+projectRoot = fileparts(fileparts(fileparts(mfilename('fullpath'))));
+figureDirectory = fullfile(projectRoot, 'figures');
+
+if ~isfolder(figureDirectory)
+    [created, message] = mkdir(figureDirectory);
+    if ~created
+        error('plotTransitionResults:FigureDirectory', ...
+            'Could not create figure directory "%s": %s', ...
+            figureDirectory, message);
+    end
+end
+
 figure('Color', 'w', ...
     'Name', 'First-transition probability');
 
@@ -109,9 +121,9 @@ if isfield(post, 'memoryCorrection') && ...
 
         correctionLower = ...
             max( ...
-                post.memoryCorrection ...
-                - 2 * post.memoryCorrectionStandardError, ...
-                0);
+            post.memoryCorrection ...
+            - 2 * post.memoryCorrectionStandardError, ...
+            0);
 
         correctionUpper = ...
             post.memoryCorrection ...
@@ -159,5 +171,14 @@ if isfield(post, 'quantiles')
 
     fprintf('\n');
 end
+
+figureFile = fullfile(figureDirectory, 'first_transition_results.fig');
+pngFile = fullfile(figureDirectory, 'first_transition_results.png');
+
+savefig(gcf, figureFile);
+print(gcf, pngFile, '-dpng', '-r150');
+
+fprintf('Saved figure: %s\n', figureFile);
+fprintf('Saved figure: %s\n', pngFile);
 
 end
