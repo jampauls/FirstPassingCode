@@ -74,9 +74,6 @@ clear referenceMode;
 
 fprintf('Pass 1 of 2: accumulating total mean energy across modes...\n');
 
-meanEnergyTotal = zeros(numel(xRef), 1);
-varianceEnergyTotal = zeros(numel(xRef), 1);
-
 overlapMax = xRef(end);
 omegaList = zeros(M, 1);
 betaList = zeros(M, 1);
@@ -107,6 +104,10 @@ if numel(xRefClipped) < 2
         'The mode files do not share enough streamwise overlap.');
 end
 
+meanEnergyTotal = zeros(numel(xRefClipped), 1);
+varianceEnergyTotal = zeros(numel(xRefClipped), 1);
+interpolatedAByMode = cell(M, 1);
+
 for i = 1:M
     modeData = loadOWNSModeCached(fileList{i}, cfg);
 
@@ -119,6 +120,7 @@ for i = 1:M
     meanEnergyTotal = meanEnergyTotal + meanEnergyI;
     varianceEnergyTotal = varianceEnergyTotal + varianceEnergyI;
 
+    interpolatedAByMode{i} = Ai;
     clear modeData Ai;
 
     if mod(i, max(floor(M / 10), 1)) == 0 || i == M
@@ -149,10 +151,7 @@ reducedRankList = zeros(M, 1);
 reductionInfoByMode = cell(M, 1);
 
 for i = 1:M
-    modeData = loadOWNSModeCached(fileList{i}, cfg);
-
-    Ai = interpMatrixFamilyToGrid( ...
-        modeData.x, modeData.A, xRefClipped);
+    Ai = interpolatedAByMode{i};
 
     Gi = cell(numel(Ai), 1);
     for n = 1:numel(Ai)
@@ -165,7 +164,8 @@ for i = 1:M
     reducedRankList(i) = size(Gred{1}, 1);
     reductionInfoByMode{i} = redInfo;
 
-    clear modeData Ai Gi Gred;
+    interpolatedAByMode{i} = [];
+    clear Ai Gi Gred;
 
     if mod(i, max(floor(M / 10), 1)) == 0 || i == M
         fprintf('  pass 2 completed mode %d of %d\n', i, M);
@@ -181,9 +181,9 @@ fprintf('Ensemble stochastic dimension: r = %d (from full rank %d)\n', ...
 if strcmpi(cfg.angular.method, 'rqmc') && rTotal > maxSobolDimension
     error('runOWNSEnsembleWorkflow:SobolDimensionExceeded', ...
         ['Total reduced stochastic dimension r = %d exceeds the Sobol'' ', ...
-         'construction limit of %d dimensions. Reduce ', ...
-         'cfg.reduction.perModeTargetRank or use cfg.angular.method = ', ...
-         '''random''.'], rTotal, maxSobolDimension);
+        'construction limit of %d dimensions. Reduce ', ...
+        'cfg.reduction.perModeTargetRank or use cfg.angular.method = ', ...
+        '''random''.'], rTotal, maxSobolDimension);
 end
 
 [G, blockSizes] = assembleBlockDiagonalFamily(GredByMode);
