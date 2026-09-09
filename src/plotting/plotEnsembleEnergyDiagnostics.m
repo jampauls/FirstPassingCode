@@ -14,7 +14,7 @@ if ~isfolder(figureDirectory)
 end
 
 figure('Color', 'w', 'Name', 'Ensemble energy diagnostics');
-tiledlayout(2, 2, 'TileSpacing', 'compact', 'Padding', 'compact');
+tiledlayout(4, 2, 'TileSpacing', 'compact', 'Padding', 'compact');
 
 nexttile;
 plot(x, diagnostics.meanEnergyByMode, 'LineWidth', 0.75);
@@ -25,14 +25,27 @@ xlabel('x'); ylabel('Mean energy'); title('Mean energy trajectories');
 grid on; box on;
 
 nexttile;
-scatter(diagnostics.beta, diagnostics.omega, 45, diagnostics.peakMeanEnergy, 'filled');
-xlabel('\beta'); ylabel('\omega'); title('Peak mean energy');
-colorbar; grid on; box on;
+plotEnergyMap(diagnostics.beta, diagnostics.omega, ...
+    diagnostics.peakMeanEnergy, '\beta', '\omega', ...
+    'Peak mean energy');
 
 nexttile;
-scatter(diagnostics.beta, diagnostics.omega, 45, diagnostics.peakGrowth, 'filled');
-xlabel('\beta'); ylabel('\omega'); title('Peak growth / inlet energy');
-colorbar; grid on; box on;
+plotEnergyMap(diagnostics.beta, diagnostics.omega, ...
+    diagnostics.peakGrowth, '\beta', '\omega', ...
+    'Peak growth / inlet energy');
+
+nexttile;
+plotEnergyMap(x, diagnostics.omega, diagnostics.meanEnergyByMode, ...
+    'x', '\omega', 'Mean energy versus x and \omega');
+
+nexttile;
+plotEnergyMap(x, diagnostics.beta, diagnostics.meanEnergyByMode, ...
+    'x', '\beta', 'Mean energy versus x and \beta');
+
+nexttile;
+plotEnergyMap(diagnostics.beta, diagnostics.omega, ...
+    diagnostics.inletEnergy, '\beta', '\omega', ...
+    'Initial mean energy');
 
 nexttile;
 bar(diagnostics.pdf.binCenters, diagnostics.pdf.density, 1, ...
@@ -52,5 +65,60 @@ if nargin >= 3 && isfield(cfg, 'plot') && ...
         isfield(cfg.plot, 'closeAfterSave') && cfg.plot.closeAfterSave
     close(gcf);
 end
+
+    function plotEnergyMap(horizontalValues, verticalValues, values, ...
+            horizontalLabel, verticalLabel, plotTitle)
+
+        horizontalValues = horizontalValues(:);
+        verticalValues = verticalValues(:);
+        values = double(values);
+
+        if ~isvector(values) && ...
+                size(values, 1) == numel(horizontalValues) && ...
+                size(values, 2) == numel(verticalValues)
+            values = values.';
+        end
+
+        if ~isvector(values) && ...
+                size(values, 1) == numel(verticalValues) && ...
+                size(values, 2) == numel(horizontalValues)
+            [uniqueHorizontal, ~, horizontalIndex] = unique(horizontalValues);
+            [uniqueVertical, ~, verticalIndex] = unique(verticalValues);
+            [horizontalIndexGrid, verticalIndexGrid] = meshgrid( ...
+                horizontalIndex, verticalIndex);
+
+            gridValues = accumarray( ...
+                [verticalIndexGrid(:), horizontalIndexGrid(:)], ...
+                values(:), ...
+                [numel(uniqueVertical), numel(uniqueHorizontal)], ...
+                @mean, NaN);
+
+            [horizontalGrid, verticalGrid] = meshgrid( ...
+                uniqueHorizontal, uniqueVertical);
+        else
+            uniqueHorizontal = unique(horizontalValues);
+            uniqueVertical = unique(verticalValues);
+            [horizontalGrid, verticalGrid] = meshgrid( ...
+                uniqueHorizontal, uniqueVertical);
+
+            gridValues = griddata(horizontalValues, verticalValues, values(:), ...
+                horizontalGrid, verticalGrid, 'nearest');
+        end
+
+        if numel(uniqueHorizontal) < 2 || numel(uniqueVertical) < 2
+            plot(horizontalValues, values, 'o-');
+        else
+            contourf(horizontalGrid, verticalGrid, gridValues, 20, ...
+                'LineColor', 'none');
+        end
+
+        xlabel(horizontalLabel);
+        ylabel(verticalLabel);
+        title(plotTitle);
+        colorbar;
+        grid on;
+        box on;
+
+    end
 
 end

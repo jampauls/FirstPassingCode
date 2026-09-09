@@ -50,7 +50,8 @@ cfg.owns = struct();
 
 % All MAT-files in this directory are treated as ensemble mode files,
 % regardless of filename.
-cfg.owns.ensembleDirectory = fullfile('data');
+% cfg.owns.ensembleDirectory = fullfile('data');
+cfg.owns.ensembleDirectory = fullfile('/data2/jampauls/DataforFigures/SaveData/OWNS_ninth_Run');
 
 % Mode whose streamwise grid defines the common coordinate (index into
 % the sorted file listing, or an explicit file path). Defaults to the
