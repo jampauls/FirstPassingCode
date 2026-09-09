@@ -114,9 +114,17 @@ if numel(xRefClipped) < 2
 end
 
 meanEnergyTotal = zeros(numel(xRefClipped), 1);
+meanEnergyTotalZeroOutsideHull = zeros(numel(xRefClipped), 1);
 varianceEnergyTotal = zeros(numel(xRefClipped), 1);
 meanEnergyByMode = zeros(numel(xRefClipped), M);
 interpolatedAByMode = cell(M, 1);
+
+[modeWeights, quadratureInfo] = buildOmegaBetaQuadratureWeights( ...
+    omegaList, betaList, cfg);
+
+fprintf(['Omega-beta quadrature: nearest-cell area %.6e; boundary ', ...
+    'extrapolation %.2f%%\n'], quadratureInfo.domainArea, ...
+    100 * quadratureInfo.boundaryExtrapolationFraction);
 
 for i = 1:M
     modeData = loadOWNSModeCached(fileList{i}, cfg);
@@ -124,10 +132,16 @@ for i = 1:M
     Ai = interpMatrixFamilyToGrid( ...
         modeData.x, modeData.A, xRefClipped);
 
+    meanEnergyRawI = cellfun(@trace, Ai);
+    Ai = cellfun(@(An) modeWeights(i) * An, Ai, ...
+        'UniformOutput', false);
+
     meanEnergyI = cellfun(@trace, Ai);
     varianceEnergyI = cellfun(@(An) 2 * trace(An * An), Ai);
 
     meanEnergyTotal = meanEnergyTotal + meanEnergyI;
+    meanEnergyTotalZeroOutsideHull = meanEnergyTotalZeroOutsideHull + ...
+        quadratureInfo.weightsZeroOutsideHull(i) * meanEnergyRawI;
     varianceEnergyTotal = varianceEnergyTotal + varianceEnergyI;
     meanEnergyByMode(:, i) = meanEnergyI;
 
@@ -138,6 +152,11 @@ for i = 1:M
         fprintf('  pass 1 completed mode %d of %d\n', i, M);
     end
 end
+
+quadratureInfo.meanEnergyTotalZeroOutsideHull = ...
+    meanEnergyTotalZeroOutsideHull;
+quadratureInfo.relativeMeanEnergyBoundaryExtrapolation = ...
+    1 - meanEnergyTotalZeroOutsideHull ./ max(meanEnergyTotal, eps);
 
 [eThreshTotal, thresholdInfo] = buildEnsembleTransitionThreshold( ...
     xRefClipped, meanEnergyTotal, varianceEnergyTotal, cfg.threshold);
@@ -274,5 +293,7 @@ results.omega = omegaList;
 results.beta = betaList;
 results.energyDiagnostics = energyDiagnostics;
 results.timings = timings;
+results.modeWeights = modeWeights;
+results.quadratureInfo = quadratureInfo;
 
 end

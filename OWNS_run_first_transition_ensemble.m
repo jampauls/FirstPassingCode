@@ -85,6 +85,15 @@ cfg.owns.validateWeights = true;
 cfg.owns.weightTolerance = 1e-12;
 cfg.owns.verbose = false;
 
+% Approximate the positive-quadrant omega-beta integral with nearest-cell
+% weights on the sparse mode grid. The modal data already contain the
+% spectral weighting; only cell area is applied here.
+cfg.ensembleQuadrature = struct();
+cfg.ensembleQuadrature.omegaLimits = [];
+cfg.ensembleQuadrature.betaLimits = [0, 1];
+cfg.ensembleQuadrature.numOmegaCells = 500;
+cfg.ensembleQuadrature.numBetaCells = 500;
+
 % Cache workers are selected from available memory and CPU cores. Set a
 % finite value only to impose a lower site-specific ceiling.
 cfg.parallel = struct();
