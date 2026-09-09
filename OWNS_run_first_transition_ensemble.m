@@ -179,6 +179,12 @@ cfg.numerics.useUpperTail = true;
 cfg.plot.enable = true;
 cfg.plot.showLocalProbability = true;
 cfg.plot.showIntervalProbabilities = true;
+cfg.plot.closeAfterSave = true;
+
+cfg.analysis = struct();
+cfg.analysis.pdfNumSamples = 100000;
+cfg.analysis.pdfNumBins = 100;
+cfg.analysis.pdfRandomSeed = 1;
 
 %% ========================================================================
 %  2. Run the ensemble workflow
@@ -214,6 +220,7 @@ end
 
 if cfg.plot.enable
     plotTransitionResults(x, prob, pLocal, post, cfg);
+    plotEnsembleEnergyDiagnostics(x, results.energyDiagnostics, cfg);
 end
 
 transitionLikelihood = struct();
@@ -221,6 +228,7 @@ transitionLikelihood.x = x;
 transitionLikelihood.prob = prob;
 transitionLikelihood.post = post;
 transitionLikelihood.thresholdInfo = results.thresholdInfo;
+transitionLikelihood.energyDiagnostics = results.energyDiagnostics;
 transitionLikelihood.cfg = cfg;
 
 outputFile = fullfile( ...

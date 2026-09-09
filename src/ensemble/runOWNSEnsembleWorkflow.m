@@ -106,6 +106,7 @@ end
 
 meanEnergyTotal = zeros(numel(xRefClipped), 1);
 varianceEnergyTotal = zeros(numel(xRefClipped), 1);
+meanEnergyByMode = zeros(numel(xRefClipped), M);
 interpolatedAByMode = cell(M, 1);
 
 for i = 1:M
@@ -119,6 +120,7 @@ for i = 1:M
 
     meanEnergyTotal = meanEnergyTotal + meanEnergyI;
     varianceEnergyTotal = varianceEnergyTotal + varianceEnergyI;
+    meanEnergyByMode(:, i) = meanEnergyI;
 
     interpolatedAByMode{i} = Ai;
     clear modeData Ai;
@@ -133,6 +135,10 @@ end
 
 fprintf('Total ensemble threshold = %.6e (method: %s)\n', ...
     eThreshTotal(1), thresholdInfo.method);
+
+energyDiagnostics = computeEnsembleEnergyDiagnostics( ...
+    xRefClipped, meanEnergyByMode, omegaList, betaList, ...
+    fileList, interpolatedAByMode, cfg);
 
 % -------------------------------------------------------------------------
 % Pass 2: build and reduce G_i(x) per mode, then assemble block-diagonal.
@@ -242,5 +248,9 @@ results.rFull = rFull;
 results.numModes = M;
 results.fileList = fileList;
 results.cfg = cfg;
+results.meanEnergyByMode = meanEnergyByMode;
+results.omega = omegaList;
+results.beta = betaList;
+results.energyDiagnostics = energyDiagnostics;
 
 end
