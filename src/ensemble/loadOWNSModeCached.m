@@ -54,19 +54,25 @@ if isempty(sourceInfo)
 end
 
 if isfile(cacheFile)
-    loaded = load(cacheFile, 'mode', 'sourceDatenum', 'sourceBytes');
+    try
+        loaded = load(cacheFile, 'mode', 'sourceDatenum', 'sourceBytes');
+        isValid = isfield(loaded, 'mode') && ...
+            isfield(loaded, 'sourceDatenum') && ...
+            isfield(loaded, 'sourceBytes') && ...
+            loaded.sourceDatenum == sourceInfo.datenum && ...
+            loaded.sourceBytes == sourceInfo.bytes;
 
-    isStale = ~isfield(loaded, 'sourceDatenum') || ...
-        ~isfield(loaded, 'sourceBytes') || ...
-        loaded.sourceDatenum ~= sourceInfo.datenum || ...
-        loaded.sourceBytes ~= sourceInfo.bytes;
-
-    if ~isStale
-        mode = loaded.mode;
-        return;
+        if isValid
+            mode = loaded.mode;
+            return;
+        end
+    catch exception
+        warning('loadOWNSModeCached:CorruptCache', ...
+            'Ignoring unreadable cache file "%s": %s', cacheFile, ...
+            exception.message);
     end
 
-    fprintf('Reduced cache is stale, rebuilding: %s\n', dataFile);
+    fprintf('Reduced cache is stale or invalid, rebuilding: %s\n', dataFile);
 else
     fprintf('Building reduced cache (first access): %s\n', dataFile);
 end
@@ -76,7 +82,20 @@ mode = loadOWNSModeRaw(dataFile, cfg);
 sourceDatenum = sourceInfo.datenum;
 sourceBytes = sourceInfo.bytes;
 
-save(cacheFile, 'mode', 'sourceDatenum', 'sourceBytes', '-v7.3');
+temporaryCacheFile = [tempname(cacheDir), '.mat'];
+try
+    save(temporaryCacheFile, 'mode', 'sourceDatenum', 'sourceBytes', '-v7.3');
+    [moved, message] = movefile(temporaryCacheFile, cacheFile, 'f');
+    if ~moved
+        error('loadOWNSModeCached:CachePublishFailed', ...
+            'Could not publish cache file "%s": %s', cacheFile, message);
+    end
+catch exception
+    if isfile(temporaryCacheFile)
+        delete(temporaryCacheFile);
+    end
+    rethrow(exception);
+end
 
 end
 

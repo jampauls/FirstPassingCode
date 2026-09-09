@@ -48,8 +48,7 @@ cfg = struct();
 
 cfg.owns = struct();
 
-% All MAT-files in this directory are treated as ensemble mode files,
-% regardless of filename.
+% Use data/ for local validation. Use this remote-machine path in Git.
 % cfg.owns.ensembleDirectory = fullfile('data');
 cfg.owns.ensembleDirectory = fullfile('/data2/jampauls/DataforFigures/SaveData/OWNS_ninth_Run');
 
@@ -85,6 +84,11 @@ cfg.owns.numStateVariables = 6;
 cfg.owns.validateWeights = true;
 cfg.owns.weightTolerance = 1e-12;
 cfg.owns.verbose = false;
+
+% Cache workers are selected from available memory and CPU cores. Set a
+% finite value only to impose a lower site-specific ceiling.
+cfg.parallel = struct();
+cfg.parallel.maxWorkers = [];
 
 % -------------------------------------------------------------------------
 % Streamwise-coordinate configuration

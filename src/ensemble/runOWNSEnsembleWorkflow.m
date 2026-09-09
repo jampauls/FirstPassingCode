@@ -38,16 +38,23 @@ function results = runOWNSEnsembleWorkflow(cfg)
 % MATLAB version: R2020b
 
 maxSobolDimension = 1111;
+timings = struct();
 
+stageTimer = tic;
 fileList = discoverOWNSEnsembleFiles(cfg.owns.ensembleDirectory);
 M = numel(fileList);
 
 fprintf('Ensemble first-transition workflow: %d mode files found.\n', M);
 
+fprintf('Preparing reduced mode cache...\n');
+precacheOWNSEnsemble(fileList, cfg);
+timings.cachePreparation = toc(stageTimer);
+
 % -------------------------------------------------------------------------
 % Reference grid selection.
 % -------------------------------------------------------------------------
 
+stageTimer = tic;
 referenceFile = fileList{1};
 
 if isfield(cfg.owns, 'ensembleReferenceFile') && ...
@@ -67,12 +74,14 @@ fprintf('Reference grid taken from: %s\n', referenceFile);
 referenceMode = loadOWNSModeCached(referenceFile, cfg);
 xRef = referenceMode.x;
 clear referenceMode;
+timings.referenceSetup = toc(stageTimer);
 
 % -------------------------------------------------------------------------
 % Pass 1: cheap mean/variance energy sweep to build the total threshold.
 % -------------------------------------------------------------------------
 
 fprintf('Pass 1 of 2: accumulating total mean energy across modes...\n');
+stageTimer = tic;
 
 overlapMax = xRef(end);
 omegaList = zeros(M, 1);
@@ -139,12 +148,14 @@ fprintf('Total ensemble threshold = %.6e (method: %s)\n', ...
 energyDiagnostics = computeEnsembleEnergyDiagnostics( ...
     xRefClipped, meanEnergyByMode, omegaList, betaList, ...
     fileList, interpolatedAByMode, cfg);
+timings.pass1 = toc(stageTimer);
 
 % -------------------------------------------------------------------------
 % Pass 2: build and reduce G_i(x) per mode, then assemble block-diagonal.
 % -------------------------------------------------------------------------
 
 fprintf('Pass 2 of 2: normalizing and reducing each mode...\n');
+stageTimer = tic;
 
 perModeCfg = cfg.reduction;
 perModeCfg.targetRank = cfg.reduction.perModeTargetRank;
@@ -194,6 +205,7 @@ end
 
 [G, blockSizes] = assembleBlockDiagonalFamily(GredByMode);
 clear GredByMode;
+timings.reductionAndAssembly = toc(stageTimer);
 
 % -------------------------------------------------------------------------
 % Streamwise derivative and probability calculation, reusing the existing
@@ -205,12 +217,15 @@ meta.omega = omegaList;
 meta.beta = betaList;
 
 Gprime = [];
+stageTimer = tic;
 if ismember(lower(cfg.maxDetection.method), {'hermite', 'adaptive'})
     fprintf('Building Gprime(x)...\n');
     Gprime = buildGprimeFamily(xRefClipped, G, meta, cfg, []);
 end
+timings.derivativeConstruction = toc(stageTimer);
 
 fprintf('Computing angular first-transition integral...\n');
+stageTimer = tic;
 
 if strcmpi(cfg.angular.method, 'rqmc') && cfg.angular.numReplicates > 1
     prob = computeRQMCCDF( ...
@@ -233,8 +248,14 @@ else
     validateRunningMax(maxData.m);
     prob = computeTransitionCDF(maxData.m, wAng, rTotal, cfg);
 end
+timings.angularIntegration = toc(stageTimer);
 
 fprintf('Terminal transition probability F(xmax) = %.6e\n', prob.F(end));
+fprintf('Stage timings (s): cache %.2f, reference %.2f, pass 1 %.2f, ', ...
+    timings.cachePreparation, timings.referenceSetup, timings.pass1);
+fprintf('reduction %.2f, derivative %.2f, angular %.2f\n', ...
+    timings.reductionAndAssembly, timings.derivativeConstruction, ...
+    timings.angularIntegration);
 
 results = struct();
 results.x = xRefClipped;
@@ -252,5 +273,6 @@ results.meanEnergyByMode = meanEnergyByMode;
 results.omega = omegaList;
 results.beta = betaList;
 results.energyDiagnostics = energyDiagnostics;
+results.timings = timings;
 
 end
