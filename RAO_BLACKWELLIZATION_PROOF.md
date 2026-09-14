@@ -52,7 +52,7 @@ where
 $$
 R^2\sim\chi_r^2,
 \qquad
-\boldsymbol{u}\sim\operatorname{Unif}(S^{r-1}),
+\boldsymbol{u}\sim\mathop{\mathrm{Unif}}(S^{r-1}),
 \qquad
 R\perp\boldsymbol{u}.
 $$
@@ -110,21 +110,21 @@ Thus analytic integration of the radius does not change the first-passage probab
 Conditional on $\mathcal{U}$, $Y_x$ is Bernoulli with success probability $Z_x$. Therefore,
 
 $$
-\operatorname{Var}(Y_x\mid\mathcal{U})=Z_x(1-Z_x).
+\mathop{\mathrm{Var}}(Y_x\mid\mathcal{U})=Z_x(1-Z_x).
 $$
 
 The law of total variance gives
 
 $$
-\operatorname{Var}(Y_x)
-=E[Z_x(1-Z_x)]+\operatorname{Var}(Z_x),
+\mathop{\mathrm{Var}}(Y_x)
+=E[Z_x(1-Z_x)]+\mathop{\mathrm{Var}}(Z_x),
 $$
 
 or equivalently,
 
 $$
 \boxed{
-\operatorname{Var}(Y_x)-\operatorname{Var}(Z_x)
+\mathop{\mathrm{Var}}(Y_x)-\mathop{\mathrm{Var}}(Z_x)
 =E[Z_x(1-Z_x)]\geq0.
 }
 $$
@@ -150,9 +150,9 @@ $$
 is unbiased, and
 
 $$
-\operatorname{Var}(\widehat F_{\mathrm{CMC}}(x))
-=\frac{\operatorname{Var}(Z_x)}{K}
-\leq\frac{\operatorname{Var}(Y_x)}{K}.
+\mathop{\mathrm{Var}}(\widehat F_{\mathrm{CMC}}(x))
+=\frac{\mathop{\mathrm{Var}}(Z_x)}{K}
+\leq\frac{\mathop{\mathrm{Var}}(Y_x)}{K}.
 $$
 
 For comparison, independent direct Gaussian trajectories $\boldsymbol{w}_1,\ldots,\boldsymbol{w}_K$ give $\widehat F_{\mathrm{direct}}(x)=K^{-1}\sum_kY_x(\boldsymbol{w}_k)$, with variance $F_{\mathrm{fp}}(x)(1-F_{\mathrm{fp}}(x))/K$.
@@ -167,7 +167,7 @@ For comparison, independent direct Gaussian trajectories $\boldsymbol{w}_1,\ldot
 
 ## Scope
 
-The proof applies to centered Gaussian vectors and homogeneous quadratic forms. Let $\boldsymbol{w}\sim N(\boldsymbol{0},\Sigma)$ in $\mathbb{R}^d$, let $q=\operatorname{rank}(\Sigma)\geq1$, and choose any factorization $\Sigma=LL^T$. Then $L\boldsymbol{z}$ with $\boldsymbol{z}\sim N(\boldsymbol{0},I_q)$ reduces the problem to the identity above on the $q$-dimensional support.
+The proof applies to centered Gaussian vectors and homogeneous quadratic forms. Let $\boldsymbol{w}\sim N(\boldsymbol{0},\Sigma)$ in $\mathbb{R}^d$, let $q=\mathop{\mathrm{rank}}(\Sigma)\geq1$, and choose any factorization $\Sigma=LL^T$. Then $L\boldsymbol{z}$ with $\boldsymbol{z}\sim N(\boldsymbol{0},I_q)$ reduces the problem to the identity above on the $q$-dimensional support.
 
 Noncentered Gaussian inputs are a possible extension, but they do not have this simple radial factorization.
 
