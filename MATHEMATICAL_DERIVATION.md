@@ -142,8 +142,8 @@ $$
 the conditional first-passage event is
 
 $$
-\{X_{\mathrm{fp}}\leq x\mid\boldsymbol{u}\}
-=\{R^2m_{\boldsymbol{u}}(x)\geq1\}.
+\{X_{\mathrm{fp}}\leq x\mid\boldsymbol{u}
+\}=\{R^2m_{\boldsymbol{u}}(x)\geq1\}.
 $$
 
 When $m_{\boldsymbol{u}}(x)>0$,
@@ -229,7 +229,7 @@ $$
 \boldsymbol{z}_i^TG_{i,\mathrm{red}}(x)\boldsymbol{z}_i.
 $$
 
-Thus the composite system has the same normalized total-energy threshold event as the sum of reduced mode energies. The radial-angular derivation applies directly in dimension $r_{\mathrm{total}}$. Reduction changes the model through projection; block-diagonal assembly itself preserves the reduced independent-mode quadratic form exactly.
+Thus the composite system has the same normalized total-energy threshold event as the sum of reduced mode energies. The radial-angular derivation applies directly in dimension $r_{\mathrm{total}}$. Reduce the proof on that reduced support.
 
 ## 5. Related probability quantities
 
@@ -298,9 +298,9 @@ $$
 m_k(x)=\max_{\xi\in[x_0,x]}\boldsymbol{u}_k^TG(\xi)\boldsymbol{u}_k.
 $$
 
-The same formula with $m_k(x)$ replaced by $a_k(x)$ estimates local exceedance. Using the same quadrature directions for both estimates preserves $\widehat p_{\mathrm{local}}(x)\leq\widehat F_{\mathrm{fp}}(x)$ up to floating-point error.
+The same formula with $m_k(x)$ replaced by $a_k(x)$ estimates local exceedance. Using the same quadrature directions for both estimates preserves $\widehat p_{\mathrm{local}}(x)\leq\widehat F_{\mathrm{fp}}(x)$.
 
-For a saved spatial grid, the maximum is over the grid-defined event. A cubic-Hermite maximum instead defines an interpolated event. Either numerical maximum agrees with the continuum model only after a separate grid-convergence or interpolation-error analysis.
+For a saved spatial grid, the maximum is over the grid-defined event. A cubic-Hermite maximum instead defines an interpolated event. Either numerical maximum agrees with the continuum model only after the grid or interpolation error is controlled.
 
 For RQMC, let $\widehat F_j(x)$ be the estimate from scramble $j$, $j=1,\ldots,J$. Then
 
@@ -336,6 +336,6 @@ Thus the derivation is identical after replacement of the real chi-square radial
 
 ## 8. Validation references
 
-The real-valued derivation is numerically checked by the analytic synthetic matrix reconstruction, angular refinement, direct trajectory Monte Carlo comparison, local-versus-first-passage inequality, and probability-conservation checks in [tests/runSyntheticRegressionTests.m](tests/runSyntheticRegressionTests.m).
+The real-valued derivation is numerically checked by the analytic synthetic matrix reconstruction, angular refinement, direct trajectory Monte Carlo comparison, local-versus-first-passage inequality, and probability conservation tests.
 
 The proper-complex radial law and its first-passage implementation are checked against a scalar analytic result, quadratic-form moments, and direct proper-complex trajectory Monte Carlo in [tests/runProperComplexRegressionTests.m](tests/runProperComplexRegressionTests.m).
